@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://shutsumi.github.io/tedori-taro/sitemap.xml
