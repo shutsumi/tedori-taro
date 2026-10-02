@@ -1,0 +1,1011 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>手取り計算シミュレーター｜手取り教えタロウ</title>
+<meta name="description" content="会社員・副業・フリーランスの手取りを月額で計算します。都道府県ごとの健康保険料率、配偶者控除・扶養控除、年収の壁、消費税（インボイス・簡易課税）まで含めた概算を無料で。令和8年度の料率に対応。">
+<link rel="canonical" href="https://shutsumi.github.io/tedori-taro/">
+<meta name="theme-color" content="#C62828">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="手取り教えタロウ">
+<meta property="og:title" content="手取り計算シミュレーター｜手取り教えタロウ">
+<meta property="og:description" content="会社員・副業・フリーランスの手取りを月額で計算します。都道府県ごとの健康保険料率、配偶者控除・扶養控除、年収の壁、消費税（インボイス・簡易課税）まで含めた概算を無料で。令和8年度の料率に対応。">
+<meta property="og:url" content="https://shutsumi.github.io/tedori-taro/">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"手取り教えタロウ",
+"url":"https://shutsumi.github.io/tedori-taro/","description":"会社員・副業・フリーランスの手取りを月額で計算します。都道府県ごとの健康保険料率、配偶者控除・扶養控除、年収の壁、消費税（インボイス・簡易課税）まで含めた概算を無料で。令和8年度の料率に対応。","applicationCategory":"FinanceApplication",
+"operatingSystem":"Web","inLanguage":"ja",
+"offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},
+"author":{"@type":"Person","name":"うつみしょうた","url":"https://shutsumi.github.io/"}}
+</script>
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Maru+Gothic:wght@400;500;700&display=swap">
+
+<style>
+:root {
+  --paper:  #FFF4DF;   /* 地色：白ではなくクリーム */
+  --card:   #FFFCF4;
+  --ink:    #4A3524;   /* 濃茶。黒は使わない */
+  --sub:    #8A7560;
+  --red:    #C62828;   /* 王道の深紅 */
+  --yellow: #F7D154;   /* 辛子色 */
+  --line:   #D9C7A8;
+}
+* { box-sizing: border-box; }
+html { background: var(--paper); }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  /* 網点 */
+  background-image: radial-gradient(var(--line) 1px, transparent 1px);
+  background-size: 14px 14px;
+  color: var(--ink);
+  font-family: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", sans-serif;
+  font-size: 15px;
+  line-height: 1.95;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 760px; margin: 0 auto; padding: 0 20px; }
+.n { font-variant-numeric: tabular-nums; }
+
+/* ---------- 紙（二重枠） ---------- */
+.paper {
+  background: var(--card);
+  border: 3px solid var(--ink);
+  box-shadow: 0 0 0 2px var(--card), 0 0 0 5px var(--ink);
+  padding: 30px 28px;
+  margin: 0 0 40px;
+}
+
+/* ---------- 看板 ---------- */
+.sign { text-align: center; padding: 48px 0 16px; }
+.stamp {
+  width: 92px; height: 92px; margin: 0 auto 18px; border-radius: 50%;
+  border: 3px solid var(--red); background: var(--card);
+  display: grid; place-items: center; padding: 4px;
+}
+#sprite { width: 100%; height: 100%; }
+.sign h1 {
+  font-family: "Dela Gothic One", sans-serif; font-weight: 400;
+  font-size: clamp(30px, 7vw, 52px); line-height: 1.3; margin: 0 0 14px;
+  color: var(--red); letter-spacing: .04em;
+  text-shadow: 3px 3px 0 var(--yellow);
+}
+.sign .ribbon {
+  display: inline-block; background: var(--ink); color: var(--paper);
+  font-size: 12px; letter-spacing: .22em; padding: 3px 16px; margin-bottom: 18px;
+}
+.sign p { margin: 0 auto; max-width: 44ch; font-size: 14px; }
+
+/* ---------- ふきだし ---------- */
+.talk { margin-bottom: 40px; }
+.bubble {
+  background: var(--card); border: 3px solid var(--ink); border-radius: 14px;
+  padding: 14px 18px; font-size: 15px;
+}
+.bubble p { margin: 0; }
+
+/* ---------- 見出し ---------- */
+.sec-head { display: flex; align-items: center; gap: 12px; margin: 0 0 20px; }
+.kanji {
+  flex: none; width: 34px; height: 34px; border-radius: 50%;
+  background: var(--red); color: var(--card); display: grid; place-items: center;
+  font-size: 17px; font-weight: 700; padding-bottom: 2px;
+}
+.sec-head h2 { font-size: 19px; font-weight: 700; margin: 0; }
+.sec-head h2 em { font-style: normal; background: linear-gradient(transparent 62%, var(--yellow) 62%); }
+
+/* ---------- 働き方 ---------- */
+.modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+@media (max-width: 560px) { .modes { grid-template-columns: 1fr; } }
+.modes label { cursor: pointer; }
+.modes input { position: absolute; opacity: 0; pointer-events: none; }
+.modes span {
+  display: block; text-align: center; padding: 14px 8px; font-size: 15px; font-weight: 500;
+  background: var(--paper); border: 2px solid var(--ink); border-radius: 8px; transition: .12s;
+}
+.modes span small { display: block; font-size: 11.5px; font-weight: 400; color: var(--sub); margin-top: 2px; }
+.modes label:hover span { background: #fff8e8; }
+.modes input:checked + span { background: var(--red); border-color: var(--red); color: var(--card); box-shadow: 3px 3px 0 var(--ink); }
+.modes input:checked + span small { color: #ffd9d9; }
+.modes input:focus-visible + span { outline: 3px solid var(--yellow); outline-offset: 2px; }
+
+/* ---------- 業務委託の一覧 ---------- */
+.works-wrap { padding: 13px 0; border-bottom: 2px dotted var(--line); }
+.works-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.works-head .lb { font-size: 14.5px; font-weight: 500; }
+.works-head .tot { font-size: 13px; color: var(--sub); }
+.works-head .tot b { font-size: 17px; font-weight: 700; color: var(--red); font-variant-numeric: tabular-nums; }
+#works { display: flex; flex-direction: column; gap: 8px; margin: 12px 0 10px; }
+.work { display: grid; grid-template-columns: minmax(0,1fr) auto auto; gap: 8px; align-items: center; }
+.work .wname {
+  font-family: "Zen Maru Gothic", sans-serif; font-size: 14px; font-weight: 500; width: 100%;
+  color: var(--ink); background: var(--card); border: 2px solid var(--line); border-radius: 6px;
+  padding: 4px 9px; text-align: left;
+}
+.work .wname::placeholder { color: var(--sub); font-weight: 400; }
+.work .wname:focus { outline: 0; border-color: var(--red); background: #fff8e8; }
+.work .wdel {
+  width: 30px; height: 30px; padding: 0; cursor: pointer; line-height: 1; font-size: 15px; font-weight: 700;
+  color: var(--sub); background: var(--card); border: 2px solid var(--line); border-radius: 6px;
+}
+.work .wdel:hover { color: var(--red); border-color: var(--red); }
+.addwork {
+  font-family: "Zen Maru Gothic", sans-serif; font-size: 13px; font-weight: 500; width: 100%;
+  padding: 7px; cursor: pointer; color: var(--ink); background: var(--paper);
+  border: 2px dashed var(--ink); border-radius: 8px;
+}
+.addwork:hover { background: #fff8e8; color: var(--red); }
+.work .wname:focus-visible, .work .wdel:focus-visible, .addwork:focus-visible { outline: 3px solid var(--yellow); outline-offset: 1px; }
+.empty-work { margin: 0 0 10px; font-size: 12.5px; color: var(--sub); }
+
+/* ---------- 単位の切り替え ---------- */
+.unitsw { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px; }
+.unitsw label { cursor: pointer; }
+.unitsw input { position: absolute; opacity: 0; pointer-events: none; }
+.unitsw span {
+  display: block; text-align: center; padding: 8px 6px; font-size: 13px; font-weight: 500;
+  background: var(--paper); border: 2px solid var(--ink); border-radius: 6px; transition: .12s;
+}
+.unitsw label:hover span { background: #fff8e8; }
+.unitsw input:checked + span { background: var(--ink); color: var(--card); }
+.unitsw input:focus-visible + span { outline: 3px solid var(--yellow); outline-offset: 2px; }
+
+/* ---------- 入力 ---------- */
+.fields { display: flex; flex-direction: column; }
+.f { display: grid; grid-template-columns: 1fr auto; gap: 2px 16px; align-items: center; padding: 13px 0; border-bottom: 2px dotted var(--line); }
+.f:last-child { border-bottom: 0; }
+.f > label, .f > .lb { font-size: 14.5px; font-weight: 500; }
+.f .note { grid-column: 1 / -1; font-size: 12px; color: var(--sub); line-height: 1.8; }
+.f .amt { display: inline-flex; align-items: baseline; gap: 6px; }
+input[type="number"], select {
+  font-family: "Zen Maru Gothic", sans-serif; font-variant-numeric: tabular-nums; font-weight: 700;
+  font-size: 17px; color: var(--ink); background: var(--paper);
+  border: 2px solid var(--ink); border-radius: 6px; padding: 4px 9px; text-align: right; width: 108px;
+}
+select { text-align: left; width: auto; min-width: 180px; font-size: 14px; font-weight: 400; }
+input[type="number"]:focus, select:focus { outline: 0; border-color: var(--red); background: #fff8e8; }
+input[type="number"]:focus-visible, select:focus-visible, input[type="checkbox"]:focus-visible { outline: 3px solid var(--yellow); outline-offset: 1px; }
+.unit { font-size: 12px; color: var(--sub); }
+.chk { display: flex; align-items: center; gap: 10px; font-size: 14.5px; font-weight: 500; cursor: pointer; }
+.chk input { accent-color: var(--red); width: 17px; height: 17px; }
+
+details.more > summary {
+  cursor: pointer; list-style: none; font-size: 14px; font-weight: 500; text-align: center;
+  background: var(--paper); border: 2px dashed var(--ink); border-radius: 8px; padding: 10px;
+}
+details.more > summary::-webkit-details-marker { display: none; }
+details.more > summary::after { content: "　▼"; font-size: 10px; color: var(--red); }
+details.more[open] > summary::after { content: "　▲"; }
+details.more[open] > summary { margin-bottom: 18px; }
+.sub-h { font-size: 13px; font-weight: 700; color: var(--red); margin: 26px 0 6px; }
+.sub-h::before { content: "◆ "; font-size: 10px; vertical-align: 2px; }
+.sub-h:first-of-type { margin-top: 4px; }
+
+/* ---------- けっか（証書） ---------- */
+.result { text-align: center; }
+.result .cap { display: inline-block; background: var(--ink); color: var(--paper); font-size: 11.5px; letter-spacing: .2em; padding: 3px 16px; }
+.result .big {
+  font-family: "Dela Gothic One", sans-serif; font-variant-numeric: tabular-nums;
+  font-size: clamp(50px, 13vw, 92px); line-height: 1.1; margin: 16px 0 2px; color: var(--red);
+  text-shadow: 4px 4px 0 var(--yellow);
+}
+.result .big .u { font-family: "Zen Maru Gothic", sans-serif; font-size: .24em; color: var(--ink); margin-left: 8px; text-shadow: none; }
+.result .month { font-size: 14px; }
+.result .month b { font-size: 21px; color: var(--red); }
+.result .rate { font-size: 12.5px; color: var(--sub); margin-top: 8px; }
+
+table.led { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 28px; text-align: left; }
+table.led th {
+  font-size: 11px; letter-spacing: .14em; font-weight: 700; color: var(--sub);
+  text-align: right; padding: 0 0 7px; border-bottom: 2px solid var(--ink);
+}
+table.led th:first-child { text-align: left; }
+table.led td { padding: 9px 0; border-bottom: 2px dotted var(--line); }
+table.led td.v { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; font-weight: 500; }
+table.led td .memo { display: block; font-size: 11.5px; color: var(--sub); line-height: 1.7; font-weight: 400; }
+table.led tr.sum td { border-top: 3px solid var(--ink); border-bottom: 0; padding-top: 13px; font-size: 18px; font-weight: 700; }
+table.led tr.sum td.v { color: var(--red); }
+
+.callout { background: var(--paper); border: 2px solid var(--ink); border-radius: 10px; padding: 14px 16px; margin-top: 22px; font-size: 13px; line-height: 1.9; text-align: left; }
+.callout .t { display: block; font-weight: 700; color: var(--red); }
+.callout b { color: var(--red); font-weight: 700; }
+
+/* ---------- 年収の壁（ものさし） ---------- */
+.wall-bar { position: relative; height: 18px; background: var(--yellow); border: 2px solid var(--ink); border-radius: 3px; margin: 44px 0 58px; }
+.wall-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--red); }
+.wall-tick { position: absolute; top: -8px; bottom: -8px; width: 2px; background: var(--ink); }
+.wall-tick span { position: absolute; top: 18px; left: 0; transform: translateX(-50%); font-size: 11px; color: var(--sub); white-space: nowrap; text-align: center; line-height: 1.5; }
+.wall-tick span b { display: block; font-weight: 700; color: var(--ink); }
+.wall-you { position: absolute; top: -30px; transform: translateX(-50%); font-size: 12px; font-weight: 700; color: var(--red); white-space: nowrap; }
+
+/* ---------- ボタン ---------- */
+.tools { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.btn {
+  font-family: "Zen Maru Gothic", sans-serif; font-size: 14px; font-weight: 700; padding: 11px 24px;
+  cursor: pointer; color: var(--ink); background: var(--card);
+  border: 2px solid var(--ink); border-radius: 8px; box-shadow: 3px 3px 0 var(--ink); transition: .1s;
+}
+.btn:hover { background: var(--yellow); }
+.btn:active { transform: translate(3px, 3px); box-shadow: none; }
+.btn:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
+.saved { text-align: center; font-size: 12px; color: var(--sub); margin: 14px 0 0; min-height: 1.8em; }
+
+/* ---------- 注記 ---------- */
+.notes h3 { font-size: 12.5px; font-weight: 700; color: var(--red); margin: 22px 0 6px; }
+.notes h3::before { content: "◆ "; font-size: 9px; vertical-align: 2px; }
+.notes h3:first-of-type { margin-top: 0; }
+.notes ul { margin: 0; padding: 0; list-style: none; font-size: 12.5px; color: var(--sub); line-height: 1.9; }
+.notes li { padding-left: 1.1em; text-indent: -1.1em; }
+.notes li::before { content: "・"; }
+.notes b { color: var(--ink); font-weight: 700; }
+.notes a { color: var(--red); }
+.foot { text-align: center; font-size: 12px; color: var(--sub); padding: 0 0 72px; }
+.foot a { color: var(--red); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="sign">
+    <div class="stamp">
+      <svg id="sprite" viewBox="0 0 48 48" role="img" aria-label="タロウ">
+        <defs><clipPath id="taroClip"><circle cx="24" cy="24" r="23.5"/></clipPath></defs>
+        <g clip-path="url(#taroClip)">
+          <circle cx="24" cy="24" r="23.5" fill="#FFFCF4"/>
+          <path d="M5 50 C5 40.2 13.6 34.6 24 34.6 C34.4 34.6 43 40.2 43 50 Z" fill="#C62828"/>
+          <path d="M20 35.2 L24 41 L28 35.2" fill="none" stroke="#FFFCF4" stroke-width="2.4" stroke-linejoin="round"/>
+          <path d="M21.1 38.3 L24 40.4 L21.1 42.5 Z" fill="#F7D154"/>
+          <path d="M26.9 38.3 L24 40.4 L26.9 42.5 Z" fill="#F7D154"/>
+          <circle cx="24" cy="40.4" r="1.15" fill="#F7D154"/>
+          <circle cx="24" cy="21" r="12" fill="#FFE3BE" stroke="#4A3524" stroke-width="2"/>
+          <path d="M12.17 19 A12 12 0 0 1 35.83 19 Z" fill="#4A3524"/>
+          <path d="M12.4 19.6 C13.4 15.4 18 11.6 24 11.6 C30 11.6 34.6 15.4 35.6 19.6 Z" fill="#4A3524"/>
+          <g fill="none" stroke="#4A3524" stroke-width="1.7" stroke-linecap="round">
+            <circle cx="18.6" cy="22.2" r="4.1"/>
+            <circle cx="29.4" cy="22.2" r="4.1"/>
+            <path d="M22.7 22.2 H25.3"/>
+            <path d="M14.5 21.6 L12.3 20.8"/>
+            <path d="M33.5 21.6 L35.7 20.8"/>
+          </g>
+          <circle cx="18.6" cy="22.2" r="1.25" fill="#4A3524"/>
+          <circle cx="29.4" cy="22.2" r="1.25" fill="#4A3524"/>
+          <path d="M20.9 28 Q24 30.6 27.1 28" fill="none" stroke="#4A3524" stroke-width="1.8" stroke-linecap="round"/>
+        </g>
+      </svg>
+    </div>
+    <div class="ribbon">手取り相談所</div>
+    <h1>手取り教えタロウ</h1>
+    <p>会社員も、副業も、フリーランスも。額面や売上から社会保険料・所得税・住民税・消費税を引いて、手元に残る金額をお教えします。</p>
+  </div>
+
+  <div class="talk" id="talk">
+    <div class="bubble"><p id="taroSay">金額を入れてごらん。手取りを計算してあげよう。</p></div>
+  </div>
+
+  <form id="form">
+
+    <div class="paper">
+      <div class="sec-head"><span class="kanji">一</span><h2><em>働き方</em></h2></div>
+      <div class="modes">
+        <label><input type="radio" name="mode" value="emp"><span>会社員<small>給与だけ</small></span></label>
+        <label><input type="radio" name="mode" value="both"><span>会社員と副業<small>給与と業務委託</small></span></label>
+        <label><input type="radio" name="mode" value="free" checked><span>フリーランス<small>業務委託だけ</small></span></label>
+      </div>
+    </div>
+
+    <div class="paper">
+      <div class="sec-head"><span class="kanji">二</span><h2><em>金額</em></h2></div>
+      <div class="unitsw">
+        <label><input type="radio" name="unit" value="month" checked><span>月額で入れる</span></label>
+        <label><input type="radio" name="unit" value="year"><span>年額で入れる</span></label>
+      </div>
+      <div class="fields">
+        <div class="f" id="fSalary">
+          <label for="salary" id="lbSalary">給与の月額（額面）</label>
+          <span class="amt"><input type="number" id="salary" value="30" min="0" max="10000" step="10"><span class="unit">万円</span></span>
+          <span class="note" id="nSalary">—</span>
+        </div>
+        <div class="works-wrap" id="fSales">
+          <div class="works-head">
+            <span class="lb" id="lbSales">業務委託の売上</span>
+            <span class="tot">合計 <b class="n" id="salesTotal">30</b> 万円</span>
+          </div>
+          <div id="works"></div>
+          <button type="button" class="addwork" id="addWork">＋ 業務委託を追加</button>
+          <p class="note" id="nSales" style="margin:10px 0 0">消費税を含まない金額。請求額が税込なら1.1で割った額を入れる。</p>
+        </div>
+        <div class="f" id="fExpense">
+          <label for="expense" id="lbExpense">その経費</label>
+          <span class="amt"><input type="number" id="expense" value="0" min="0" max="10000" step="10"><span class="unit">万円</span></span>
+          <span class="note" id="nExpense">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="paper">
+      <div class="sec-head"><span class="kanji">三</span><h2><em>住まい</em></h2></div>
+      <div class="fields">
+        <div class="f">
+          <label for="pref">都道府県</label>
+          <select id="pref"></select>
+          <span class="note">健康保険料率は都道府県ごとに違う（協会けんぽ・令和8年度）。</span>
+        </div>
+        <div class="f">
+          <label class="chk" for="age40"><input type="checkbox" id="age40"> 40歳以上65歳未満</label>
+          <span></span>
+          <span class="note">介護保険料（1.62%）が加わる。</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="paper">
+      <div class="sec-head"><span class="kanji">四</span><h2><em>くわしい条件</em></h2></div>
+      <details class="more">
+        <summary>家族・青色申告・消費税・積み立て・住民税</summary>
+
+        <p class="sub-h">家族</p>
+        <div class="fields">
+          <div class="f">
+            <label for="spouse">配偶者</label>
+            <select id="spouse">
+              <option value="no">いない／共働きで収入が多い</option>
+              <option value="yes">いる（収入が少ない）</option>
+            </select>
+          </div>
+          <div class="f" id="fSpouseInc">
+            <label for="spouseInc" id="lbSpouseInc">配偶者の年収（給与）</label>
+            <span class="amt"><input type="number" id="spouseInc" value="0" min="0" max="3000" step="10"><span class="unit">万円</span></span>
+            <span class="note">配偶者控除・配偶者特別控除の判定に使う。</span>
+          </div>
+          <div class="f">
+            <label for="dep1">扶養する家族（16〜18歳・23〜69歳）</label>
+            <span class="amt"><input type="number" id="dep1" value="0" min="0" max="10" step="1"><span class="unit">人</span></span>
+          </div>
+          <div class="f">
+            <label for="dep2">同 19〜22歳</label>
+            <span class="amt"><input type="number" id="dep2" value="0" min="0" max="10" step="1"><span class="unit">人</span></span>
+          </div>
+          <div class="f">
+            <label for="dep3">同 70歳以上</label>
+            <span class="amt"><input type="number" id="dep3" value="0" min="0" max="10" step="1"><span class="unit">人</span></span>
+          </div>
+        </div>
+
+        <p class="sub-h" id="hBiz">業務委託</p>
+        <div class="fields" id="bizFields">
+          <div class="f">
+            <label for="aoiro">青色申告特別控除</label>
+            <select id="aoiro">
+              <option value="65">65万円（e-Taxで申告）</option>
+              <option value="55">55万円（紙で申告）</option>
+              <option value="10">10万円（簡易な記帳）</option>
+              <option value="0">なし（白色申告）</option>
+            </select>
+          </div>
+          <div class="f">
+            <label for="ctax">消費税</label>
+            <select id="ctax">
+              <option value="menzei">免税（インボイス未登録・消費税は請求している）</option>
+              <option value="none">消費税を請求していない</option>
+              <option value="2wari">2割特例（2026年分まで）</option>
+              <option value="kani5">簡易課税・第五種（50%）</option>
+              <option value="honsoku">本則課税</option>
+            </select>
+            <span class="note">インボイス未登録なら「免税」。報酬に消費税を上乗せしていない契約なら「請求していない」。</span>
+          </div>
+          <div class="f" id="fKokuho">
+            <label for="kokuho">国民健康保険料（月額）</label>
+            <span class="amt"><input type="number" id="kokuho" value="0" min="0" max="20" step="0.1"><span class="unit">万円</span></span>
+            <span class="note" id="kokuhoNote">0のままなら概算で計算する。自治体で試算した額があれば入れる。</span>
+          </div>
+        </div>
+
+        <p class="sub-h">積み立て</p>
+        <div class="fields">
+          <div class="f">
+            <label for="ideco" id="lbIdeco">iDeCo</label>
+            <span class="amt"><input type="number" id="ideco" value="0" min="0" max="82" step="1"><span class="unit">万円</span></span>
+          </div>
+          <div class="f">
+            <label for="kyosai" id="lbKyosai">小規模企業共済</label>
+            <span class="amt"><input type="number" id="kyosai" value="0" min="0" max="84" step="1"><span class="unit">万円</span></span>
+            <span class="note">個人事業主だけが入れる。会社員は対象外。</span>
+          </div>
+        </div>
+
+        <p class="sub-h">住民税</p>
+        <div class="fields">
+          <div class="f">
+            <label class="chk" for="firstYear"><input type="checkbox" id="firstYear"> 今年から働き方が変わった</label>
+            <span></span>
+            <span class="note">住民税は前年の所得にかかる。独立や転職の1年目は、今年は引かれず翌年まとめて来る。</span>
+          </div>
+        </div>
+      </details>
+    </div>
+  </form>
+
+  <div class="paper result">
+    <span class="cap">1か月の手取り</span>
+    <div class="big n"><span id="netM">—</span><span class="u">万円</span></div>
+    <div class="month">1年では <b class="n" id="netY">—</b> 万円</div>
+    <div class="rate" id="rateLine">—</div>
+
+    <table class="led">
+      <thead><tr><th>内訳</th><th>月額</th><th>年額</th></tr></thead>
+      <tbody id="led"></tbody>
+    </table>
+
+    <div id="callouts"></div>
+  </div>
+
+  <div class="paper" id="wall" hidden>
+    <div class="sec-head"><span class="kanji">壁</span><h2><em>年収の壁</em></h2></div>
+    <p style="font-size:14px;margin:0" id="wallLead">—</p>
+    <div class="wall-bar" id="wallBar"></div>
+    <p style="font-size:12px;color:var(--sub);margin:0" id="wallNote">—</p>
+  </div>
+
+  <div class="paper">
+    <div class="tools">
+      <button type="button" class="btn" id="copyLink">この入力のリンクをコピー</button>
+      <button type="button" class="btn" id="reset">入力を消す</button>
+    </div>
+    <p class="saved" id="saved"></p>
+  </div>
+
+  <div class="paper notes">
+    <h3>計算の前提</h3>
+    <ul id="notes"></ul>
+    <h3>使っている数字</h3>
+    <ul>
+      <li>健康保険料率：協会けんぽ 令和8年度（令和8年3月分から適用）。介護保険料率 1.62%</li>
+      <li>厚生年金 18.3%（労使折半）、雇用保険 労働者負担 0.5%（令和8年度・一般の事業）</li>
+      <li>国民年金 月17,920円（令和8年度）</li>
+      <li>給与所得控除・基礎控除は令和7年度税制改正後の金額</li>
+    </ul>
+    <h3>できないこと</h3>
+    <ul>
+      <li>生命保険料控除・地震保険料控除・医療費控除・住宅ローン控除・ふるさと納税は入っていない。該当すれば実際の手取りはこれより増える</li>
+      <li>住民税の調整控除を入れていないため、住民税が数千円多めに出る</li>
+      <li>社会保険料は標準報酬月額の等級を使わず、年収から直接計算した概算</li>
+      <li>19〜22歳の家族は特定扶養控除のみ（特定親族特別控除は未対応）</li>
+    </ul>
+  </div>
+
+  <div class="foot">
+    <p style="margin:0 0 8px">税額の確定や申告の判断は、税務署や税理士に確認してください。このページは概算を出すための道具です。</p>
+    <p style="margin:0"><a href="https://shutsumi.github.io/" target="_blank" rel="noopener">うつみしょうた</a></p>
+  </div>
+</div>
+
+<script>
+
+
+
+(function () {
+  "use strict";
+  var MAN = 10000;
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (t) { return String(t).replace(/[&<>"']/g, function (c) {
+    return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]; }); };
+
+  /* ============ 制度の数字（令和8年度） ============ */
+
+  var PREF = [["北海道",10.28],["青森県",9.85],["岩手県",9.51],["宮城県",10.10],["秋田県",10.01],
+    ["山形県",9.75],["福島県",9.50],["茨城県",9.52],["栃木県",9.82],["群馬県",9.68],
+    ["埼玉県",9.67],["千葉県",9.73],["東京都",9.85],["神奈川県",9.92],["新潟県",9.21],
+    ["富山県",9.59],["石川県",9.70],["福井県",9.71],["山梨県",9.55],["長野県",9.63],
+    ["岐阜県",9.80],["静岡県",9.61],["愛知県",9.93],["三重県",9.77],["滋賀県",9.88],
+    ["京都府",9.89],["大阪府",10.13],["兵庫県",10.12],["奈良県",9.91],["和歌山県",10.06],
+    ["鳥取県",9.86],["島根県",9.94],["岡山県",10.05],["広島県",9.78],["山口県",10.15],
+    ["徳島県",10.24],["香川県",10.02],["愛媛県",9.98],["高知県",10.05],["福岡県",10.11],
+    ["佐賀県",10.55],["長崎県",10.06],["熊本県",10.08],["大分県",10.08],["宮崎県",9.77],
+    ["鹿児島県",10.13],["沖縄県",9.44]];
+  var KAIGO = 1.62;          // 介護保険料率（全国一律）
+  var KOSEI = 18.3;          // 厚生年金（労使折半）
+  var KOYOU = 0.5;           // 雇用保険 労働者負担
+  var KOKUNEN = 17920 * 12;  // 国民年金（年額）
+  var CAP_KENPO = 1390000;   // 健康保険 標準報酬月額の上限
+  var CAP_KOSEI = 650000;    // 厚生年金 標準報酬月額の上限
+
+  /* ============ 控除 ============ */
+
+  function kyuyoKoujo(y) {                       // 給与所得控除（令和7年改正後）
+    if (y <= 0) return 0;
+    if (y <= 1900000) return Math.min(y, 650000);
+    if (y <= 3600000) return y * 0.30 + 80000;
+    if (y <= 6600000) return y * 0.20 + 440000;
+    if (y <= 8500000) return y * 0.10 + 1100000;
+    return 1950000;
+  }
+  function kisoIT(g) {                           // 基礎控除・所得税
+    if (g <= 1320000) return 950000;
+    if (g <= 3360000) return 880000;
+    if (g <= 4890000) return 680000;
+    if (g <= 6550000) return 630000;
+    if (g <= 23500000) return 580000;
+    if (g <= 24000000) return 480000;
+    if (g <= 24500000) return 320000;
+    if (g <= 25000000) return 160000;
+    return 0;
+  }
+  function kisoJU(g) {                           // 基礎控除・住民税
+    if (g <= 24000000) return 430000;
+    if (g <= 24500000) return 290000;
+    if (g <= 25000000) return 150000;
+    return 0;
+  }
+  // 本人の合計所得による段階（配偶者控除・配偶者特別控除で共通）
+  function spouseTier(mine) {
+    if (mine <= 9000000) return 0;
+    if (mine <= 9500000) return 1;
+    if (mine <= 10000000) return 2;
+    return -1;                                   // 1000万超は適用なし
+  }
+  // 配偶者控除・配偶者特別控除（[所得税, 住民税]）
+  function spouseDeduction(mineTotal, spouseTotal) {
+    var t = spouseTier(mineTotal);
+    if (t < 0) return [0, 0];
+    if (spouseTotal <= 580000) return [[380000,330000],[260000,220000],[130000,110000]][t];
+    var steps = [
+      [ 950000, [380000,330000] ], [1000000, [360000,330000] ], [1050000, [310000,310000] ],
+      [1100000, [260000,260000] ], [1150000, [210000,210000] ], [1200000, [160000,160000] ],
+      [1250000, [110000,110000] ], [1300000, [ 60000, 60000] ], [1330000, [ 30000, 30000] ]
+    ];
+    for (var i = 0; i < steps.length; i++) {
+      if (spouseTotal <= steps[i][0]) {
+        var base = steps[i][1];
+        var scale = [1, 2 / 3, 1 / 3][t];
+        return [Math.floor(base[0] * scale / 1000) * 1000, Math.floor(base[1] * scale / 1000) * 1000];
+      }
+    }
+    return [0, 0];
+  }
+  function shotokuzei(k) {                       // 所得税（速算表＋復興特別所得税2.1%）
+    k = Math.max(0, Math.floor(k / 1000) * 1000);
+    var B = [[1950000,.05,0],[3300000,.10,97500],[6950000,.20,427500],[9000000,.23,636000],
+             [18000000,.33,1536000],[40000000,.40,2796000],[Infinity,.45,4796000]];
+    for (var i = 0; i < B.length; i++) {
+      if (k <= B[i][0]) return Math.max(0, k * B[i][1] - B[i][2]) * 1.021;
+    }
+    return 0;
+  }
+
+  /* ============ 本体 ============ */
+
+  function calc(p) {
+    var salaryY = p.salary * MAN;
+    var salesY  = p.sales * MAN;
+    var expY    = Math.min(p.expense * MAN, salesY);
+    var employed = salaryY > 0;
+
+    // 消費税（税別で受け取る前提）
+    var uketori = p.ctax === "none" ? 0 : salesY * 0.10, nozei = 0;
+    if (p.ctax === "2wari")        nozei = uketori * 0.20;
+    else if (p.ctax === "kani5")   nozei = uketori * 0.50;
+    else if (p.ctax === "honsoku") nozei = Math.max(0, uketori - expY * 0.10);
+    var keep = uketori - nozei;
+
+    // 事業所得（青色申告特別控除は事業の黒字が上限）
+    var jigyoPre = Math.max(0, salesY - expY + keep);
+    var aoiro = salesY > 0 ? Math.min(p.aoiro * MAN, jigyoPre) : 0;
+    var jigyo = jigyoPre - aoiro;
+    var jigyoZei = Math.max(0, jigyoPre - 2900000) * 0.05;   // 個人事業税
+    var kyuyoS = Math.max(0, salaryY - kyuyoKoujo(salaryY));
+    var goukei = kyuyoS + jigyo;                             // 合計所得金額
+
+    // 社会保険料
+    var shaho = 0, kenpo = 0, nenkin = 0, koyou = 0, kokuho = 0, kokunen = 0;
+    if (employed) {
+      var m = salaryY / 12;
+      var rate = (p.kenpoRate + (p.age40 ? KAIGO : 0)) / 100 / 2;
+      kenpo  = Math.min(m, CAP_KENPO) * rate * 12;
+      nenkin = Math.min(m, CAP_KOSEI) * (KOSEI / 100 / 2) * 12;
+      koyou  = salaryY * (KOYOU / 100);
+      shaho = kenpo + nenkin + koyou;
+    } else if (salesY > 0) {
+      // 国民健康保険は自治体差が大きいので概算（入力があればそれを使う）
+      var heads = 1 + (p.spouse === "yes" ? 1 : 0) + p.dep1 + p.dep2 + p.dep3;
+      var rate2 = p.age40 ? 0.115 : 0.098;
+      kokuho = p.kokuho > 0 ? p.kokuho * MAN * 12
+             : Math.min(1060000, Math.max(0, goukei - 430000) * rate2 + 60000 * heads);
+      kokunen = KOKUNEN * (p.spouse === "yes" ? 2 : 1);
+      shaho = kokuho + kokunen;
+    }
+
+    // 人的控除
+    var sp = p.spouse === "yes" ? spouseDeduction(goukei, Math.max(0, p.spouseInc * MAN - kyuyoKoujo(p.spouseInc * MAN))) : [0, 0];
+    var depIT = p.dep1 * 380000 + p.dep2 * 630000 + p.dep3 * 480000;
+    var depJU = p.dep1 * 330000 + p.dep2 * 450000 + p.dep3 * 380000;
+    var tsumitate = (p.ideco + p.kyosai) * MAN;
+
+    var common = shaho + tsumitate + jigyoZei;
+    var baseIT = goukei - common - sp[0] - depIT - kisoIT(goukei);
+    var baseJU = goukei - common - sp[1] - depJU - kisoJU(goukei);
+    var it = shotokuzei(baseIT);
+    var ju = goukei > 0 ? Math.max(0, Math.floor(baseJU / 1000) * 1000) * 0.10 + 5000 : 0;
+
+    var juThisYear = p.firstYear ? 0 : ju;       // 1年目は前年分がないものとして扱う
+    var gross = salaryY + salesY;
+    var net = salaryY + (salesY - expY) + keep - shaho - it - juThisYear - jigyoZei - tsumitate;
+
+    return { salaryY: salaryY, salesY: salesY, expY: expY, keep: keep, uketori: uketori, nozei: nozei,
+             kenpo: kenpo, nenkin: nenkin, koyou: koyou, kokuho: kokuho, kokunen: kokunen,
+             shaho: shaho, it: it, ju: ju, juThisYear: juThisYear, jigyoZei: jigyoZei,
+             tsumitate: tsumitate, gross: gross, net: net, employed: employed,
+             goukei: goukei, sp: sp, aoiro: aoiro };
+  }
+
+  /* ============ 表示 ============ */
+
+  var f1 = function (n) { return (n / MAN).toFixed(1); };
+  var f2 = function (n) { return (n / MAN / 12).toFixed(2); };
+
+  /* ---- 業務委託の一覧 ---- */
+
+  var works = [{ name: "", amount: 30 }];
+  var workName = function (w, i) { return (w.name || "").trim() || "業務委託" + String.fromCharCode(65 + i); };
+  var worksTotal = function () {
+    return works.reduce(function (a, w) { return a + (w.amount || 0); }, 0);
+  };
+
+  function renderWorks() {
+    if (!works.length) {
+      $("works").innerHTML = '<p class="empty-work">業務委託がありません。下のボタンで追加してください。</p>';
+      return;
+    }
+    $("works").innerHTML = works.map(function (w, i) {
+      var nm = esc(workName(w, i));
+      return '<div class="work" data-i="' + i + '">'
+        + '<input type="text" class="wname" value="' + esc(w.name || "") + '" placeholder="業務委託'
+        + String.fromCharCode(65 + i) + '" aria-label="' + nm + ' の名前" maxlength="20">'
+        + '<span class="amt"><input type="number" class="wamt" value="' + w.amount
+        + '" min="0" max="10000" step="1" aria-label="' + nm + ' の売上"><span class="unit">万円</span></span>'
+        + '<button type="button" class="wdel" data-del="' + i + '" title="削除" aria-label="' + nm + ' を削除">×</button>'
+        + '</div>';
+    }).join("");
+  }
+
+  $("works").addEventListener("input", function (ev) {
+    var row = ev.target.closest(".work");
+    if (!row) return;
+    var i = +row.dataset.i;
+    if (ev.target.classList.contains("wname")) works[i].name = ev.target.value;
+    else if (ev.target.classList.contains("wamt")) works[i].amount = parseFloat(ev.target.value) || 0;
+    else return;
+    render();
+  });
+  $("works").addEventListener("click", function (ev) {
+    var b = ev.target.closest("[data-del]");
+    if (!b) return;
+    works.splice(+b.dataset.del, 1);
+    renderWorks(); render();
+  });
+  $("addWork").addEventListener("click", function () {
+    works.push({ name: "", amount: 0 });
+    renderWorks(); render();
+    var ns = $("works").querySelectorAll(".wname");
+    if (ns.length) ns[ns.length - 1].focus();
+  });
+
+  function read() {
+    var mul = unitInfo().mul;
+    var num = function (id) { return parseFloat($(id).value) || 0; };
+    var yen = function (id) { return num(id) * mul; };   // 年額に直す
+    var mode = document.querySelector('input[name="mode"]:checked').value;
+    var pi = +$("pref").value;
+    return {
+      mode: mode,
+      salary: mode === "free" ? 0 : yen("salary"),
+      sales:  mode === "emp"  ? 0 : worksTotal() * mul,
+      expense: mode === "emp" ? 0 : yen("expense"),
+      pref: pi, kenpoRate: PREF[pi][1], age40: $("age40").checked,
+      spouse: $("spouse").value, spouseInc: num("spouseInc"),
+      dep1: num("dep1"), dep2: num("dep2"), dep3: num("dep3"),
+      aoiro: +$("aoiro").value, ctax: $("ctax").value, kokuho: num("kokuho"),
+      ideco: yen("ideco"), kyosai: yen("kyosai"), firstYear: $("firstYear").checked
+    };
+  }
+
+  function row(label, val, memo, cls) {
+    return '<tr' + (cls ? ' class="' + cls + '"' : '') + '><td>' + label
+      + (memo ? '<span class="memo">' + memo + '</span>' : '') + '</td>'
+      + '<td class="v">' + (val < 0 ? "−" : "") + f2(Math.abs(val)) + '</td>'
+      + '<td class="v">' + (val < 0 ? "−" : "") + f1(Math.abs(val)) + '</td></tr>';
+  }
+
+  // 入力は月額でも年額でも受ける。計算の中身はすべて年額で動く
+  function unitInfo() {
+    var el = document.querySelector('input[name="unit"]:checked');
+    var month = !el || el.value === "month";
+    return { month: month, mul: month ? 12 : 1, w: month ? "月額" : "年額" };
+  }
+
+  function applyUnitLabels() {
+    var u = unitInfo();
+    var t = function (id, s) { $(id).textContent = s; };
+    t("lbSalary", u.month ? "給与の月額（額面）" : "給与の年収（額面）");
+    t("lbSales", "業務委託の売上（" + u.w + "）");
+    t("lbExpense", "その経費（" + u.w + "）");
+    t("lbIdeco", "iDeCo（" + u.w + "）");
+    t("lbKyosai", "小規模企業共済（" + u.w + "）");
+    t("nSalary", u.month
+      ? "手取りではなく、引かれる前の金額。賞与がある人は、1年分を12で割って足してください。"
+      : "賞与を含めた1年の総支給額。手取りではなく、引かれる前の金額。");
+    t("nExpense", "機材・通信費・交通費など、売上のために使った" + (u.month ? "1か月分" : "1年分") + "。");
+    var lim = function (id, m, y, step) {
+      $(id).max = u.month ? m : y;
+      $(id).step = step;
+    };
+    lim("salary", 900, 10000, u.month ? 1 : 10);
+    lim("expense", 900, 10000, u.month ? 1 : 10);
+    lim("ideco", 6.8, 82, u.month ? 0.1 : 1);
+    lim("kyosai", 7, 84, u.month ? 0.1 : 1);
+  }
+
+  var lastUnit = "month";
+
+  // 月額 ⇄ 年額を切り替えたら、入っている数字も換算する
+  function convertUnits() {
+    var now = unitInfo().month ? "month" : "year";
+    if (now === lastUnit) return;
+    var k = now === "year" ? 12 : 1 / 12;
+    ["salary", "expense", "ideco", "kyosai"].forEach(function (id) {
+      var v = parseFloat($(id).value) || 0;
+      if (v) $(id).value = Math.round(v * k * 100) / 100;
+    });
+    works.forEach(function (w) { if (w.amount) w.amount = Math.round(w.amount * k * 100) / 100; });
+    renderWorks();
+    lastUnit = now;
+  }
+
+  function render() {
+    applyUnitLabels();
+    $("salesTotal").textContent = (Math.round(worksTotal() * 10) / 10).toString();
+    var p = read();
+    var r = calc(p);
+
+    // 入力欄の出し分け
+    $("fSalary").style.display  = p.mode === "free" ? "none" : "";
+    $("fSales").style.display   = p.mode === "emp"  ? "none" : "";
+    $("fExpense").style.display = p.mode === "emp"  ? "none" : "";
+    $("bizFields").style.display = p.mode === "emp" ? "none" : "";
+    $("hBiz").style.display      = p.mode === "emp" ? "none" : "";
+    $("fKokuho").style.display   = p.mode === "free" ? "" : "none";
+    $("fSpouseInc").style.display = p.spouse === "yes" ? "" : "none";
+
+    $("netY").textContent = f1(r.net);
+    $("netM").textContent = f2(r.net);
+    if (r.gross > 0) {
+      var burden = (1 - r.net / (r.gross + r.keep - r.expY)) * 100;
+      $("rateLine").textContent = "手元に入るお金のうち、税と社会保険料で " + burden.toFixed(1) + "% が引かれます";
+    } else {
+      $("rateLine").textContent = "上の欄に年収か売上を入れると計算します";
+    }
+
+    var h = "";
+    if (r.salaryY > 0) h += row("給与（額面）", r.salaryY);
+    if (r.salesY > 0) {
+      var mul = unitInfo().mul;
+      works.forEach(function (w, i) {
+        if (w.amount > 0) h += row(esc(workName(w, i)) + "（税抜）", w.amount * mul * MAN);
+      });
+    }
+    if (r.expY > 0)    h += row("経費", -r.expY);
+    if (r.uketori > 0) h += row("受け取った消費税のうち残る分", r.keep,
+      "受取 " + f1(r.uketori) + "万 − 納税 " + f1(r.nozei) + "万");
+    if (r.employed) {
+      h += row("健康保険", -r.kenpo, PREF[p.pref][0] + " " + p.kenpoRate.toFixed(2) + "%"
+        + (p.age40 ? "＋介護 " + KAIGO + "%" : "") + " の半分");
+      h += row("厚生年金", -r.nenkin, "18.3% の半分");
+      h += row("雇用保険", -r.koyou, "0.5%");
+    } else if (r.shaho > 0) {
+      h += row("国民健康保険", -r.kokuho, p.kokuho > 0 ? "入力した月額から" : "概算");
+      h += row("国民年金", -r.kokunen, "月17,920円" + (p.spouse === "yes" ? " × 2人分" : ""));
+    }
+    h += row("所得税", -r.it);
+    h += row(p.firstYear ? "住民税（今年はかからない）" : "住民税", -r.juThisYear,
+      p.firstYear ? "来年から 年 " + f1(r.ju) + " 万円" : null);
+    if (r.jigyoZei > 0) h += row("個人事業税", -r.jigyoZei, "5%");
+    if (r.tsumitate > 0) h += row("iDeCo・小規模企業共済", -r.tsumitate, "支払いだが自分の資産として残る");
+    h += row("手取り", r.net, null, "sum");
+    $("led").innerHTML = h;
+
+    // 補足
+    var c = "";
+    if (p.firstYear && r.ju > 0) {
+      c += '<div class="callout"><span class="t">来年の住民税に備える</span>'
+        + '今年の所得にかかる住民税 <b>' + f1(r.ju) + '万円</b>（月 ' + f2(r.ju) + '万円）は、'
+        + '来年6月から納めます。今年の手取りには含まれていないので、別に取り分けておいてください。</div>';
+    }
+    if (r.tsumitate > 0) {
+      c += '<div class="callout"><span class="t">積み立てを戻すと</span>'
+        + 'iDeCoと小規模企業共済は支出ですが、自分の資産として残ります。'
+        + 'これを足し戻すと実質 <b>' + f1(r.net + r.tsumitate) + '万円</b>（月 ' + f2(r.net + r.tsumitate) + '万円）です。</div>';
+    }
+    if (p.spouse === "yes" && r.sp[0] === 0 && p.spouseInc > 0) {
+      c += '<div class="callout"><span class="t">配偶者控除は使えません</span>'
+        + '配偶者の年収か、あなたの所得が条件を超えています。配偶者の給与年収が約201万円を超えるか、'
+        + 'あなたの合計所得が1,000万円を超えると、配偶者控除・配偶者特別控除はなくなります。</div>';
+    }
+    $("callouts").innerHTML = c;
+
+    drawWall(p, r);
+    drawNotes(p, r);
+    taro(p, r);
+    save();
+  }
+
+  /* ---- 年収の壁 ---- */
+  var WALLS = [
+    { v: 123, t: "所得税", d: "本人に所得税がかかり始める" },
+    { v: 130, t: "社会保険", d: "家族の扶養を外れ、自分で健康保険・年金に入る" },
+    { v: 160, t: "配偶者控除", d: "配偶者の控除が満額から減り始める" }
+  ];
+  function drawWall(p, r) {
+    var show = p.mode === "emp" && p.salary > 0 && p.salary <= 250;
+    $("wall").hidden = !show;
+    if (!show) return;
+    var max = 260;
+    var pos = Math.min(p.salary / max * 100, 100);
+    var html = '<div class="wall-fill" style="width:' + pos + '%"></div>'
+      + '<div class="wall-you" style="left:' + pos + '%">あなた ' + p.salary + '万</div>';
+    WALLS.forEach(function (w) {
+      var x = w.v / max * 100;
+      html += '<div class="wall-tick" style="left:' + x + '%"><span><b>' + w.v + '万</b>' + w.t + '</span></div>';
+    });
+    $("wallBar").innerHTML = html;
+
+    var next = null;
+    for (var i = 0; i < WALLS.length; i++) if (p.salary < WALLS[i].v) { next = WALLS[i]; break; }
+    $("wallLead").textContent = next
+      ? "次の壁は " + next.v + "万円。あと " + (next.v - p.salary) + "万円で、" + next.d + "ラインです。"
+      : "主な壁はすべて超えています。扶養から外れ、自分で社会保険に入る前提の計算です。";
+    $("wallNote").textContent = "130万円の壁は、勤め先の規模や働く時間によっては106万円で来ます。"
+      + "従業員51人以上の会社で週20時間以上働くなどの条件に当てはまる場合です。"
+      + "160万円を超えても控除は段階的に減るだけで、198万円までは残ります。";
+  }
+
+  /* ---- 注記 ---- */
+  function drawNotes(p, r) {
+    var n = [];
+    n.push("社会保険料は給与から天引きされる本人負担分です。会社が同額を負担しています。");
+    if (!r.employed && r.shaho > 0 && p.kokuho <= 0) {
+      n.push("<b>国民健康保険は概算です。</b>自治体によって計算方法が違い、実際の額とずれます。お住まいの市区町村の窓口やサイトで試算し、その額を入れ直すと正確になります。");
+    }
+    if (p.mode !== "emp" && p.ctax === "menzei" && p.sales > 1000) {
+      n.push("<b>売上が1,000万円を超えています。</b>2年後には消費税を納める義務が出ます（課税事業者）。");
+    }
+    if (p.mode !== "emp" && p.ctax === "2wari") {
+      n.push("2割特例が使えるのは、個人事業主の場合2026年分の申告までです。2027年分からは簡易課税か本則課税になり、簡易課税を使うには前年12月31日までの届出が必要です。");
+    }
+    if (r.aoiro > 0 && r.aoiro < 650000 && p.aoiro === 65) {
+      n.push("青色申告特別控除は事業の黒字の範囲までしか引けないため、満額の65万円は使えていません。");
+    }
+    if (p.mode === "both") {
+      n.push("給与と業務委託の両方があるときは、確定申告で合算して税額を計算します。副業の所得が20万円を超えると申告が必要です。");
+    }
+    if (r.jigyoZei > 0) {
+      n.push("個人事業税がかかっています。事業の所得が事業主控除290万円を超えたためです（業種により税率3〜5%、ここでは5%）。");
+    }
+    n.push("住民税は所得の10%に均等割5,000円を足した概算です。自治体によって数百円変わります。");
+    $("notes").innerHTML = n.map(function (t) { return "<li>" + t + "</li>"; }).join("");
+  }
+
+  /* ============ ひとこと ============ */
+
+  // 結果の数字はすぐ下に出るので繰り返さない。気をつける点があるときだけ話す
+  function taro(p, r) {
+    var t = "";
+    if (r.gross <= 0) {
+      t = "金額を入れてごらん。手取りを計算してあげよう。";
+    } else if (p.firstYear && r.ju > 0) {
+      t = "1年目は住民税が引かれないぶん、手取りが多く見える。来年ぶんの "
+        + f1(r.ju) + " 万円は別に取り分けておきなさい。";
+    } else if (p.mode === "emp" && p.salary > 0 && p.salary < 123) {
+      t = "年収 " + p.salary + " 万円なら、123万円までは所得税がかからないよ。";
+    } else if (!r.employed && r.shaho > 0 && p.kokuho <= 0) {
+      t = "国民健康保険は自治体で計算が違う。役所で試算してもらって、その額を入れ直すと正確になるよ。";
+    }
+    $("talk").hidden = !t;
+    if (t) $("taroSay").textContent = t;
+  }
+
+
+  /* ============ 保存 ============ */
+
+  var IDS = ["salary","expense","pref","age40","spouse","spouseInc",
+             "dep1","dep2","dep3","aoiro","ctax","kokuho","ideco","kyosai","firstYear"];
+  var KEY = "tedori-taro-v2";
+
+  function state() {
+    var o = { mode: document.querySelector('input[name="mode"]:checked').value,
+              unit: unitInfo().month ? "month" : "year", works: works };
+    IDS.forEach(function (id) { o[id] = $(id).type === "checkbox" ? $(id).checked : $(id).value; });
+    return o;
+  }
+  function apply(o) {
+    if (o.mode) {
+      var el = document.querySelector('input[name="mode"][value="' + o.mode + '"]');
+      if (el) el.checked = true;
+    }
+    if (o.unit) {
+      var eu = document.querySelector('input[name="unit"][value="' + o.unit + '"]');
+      if (eu) eu.checked = true;
+    }
+    IDS.forEach(function (id) {
+      if (!(id in o)) return;
+      if ($(id).type === "checkbox") $(id).checked = !!o[id]; else $(id).value = o[id];
+    });
+    if (Array.isArray(o.works)) {
+      works = o.works.map(function (w) {
+        return { name: typeof w.name === "string" ? w.name.slice(0, 20) : "", amount: Number(w.amount) || 0 };
+      });
+    }
+  }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state())); } catch (e) {}
+    $("saved").textContent = "入力はこの端末に保存されます。ページを閉じても残ります。";
+  }
+  function load() {
+    try {
+      if (location.hash.length > 1) {
+        apply(JSON.parse(decodeURIComponent(escape(atob(location.hash.slice(1))))));
+        return;
+      }
+    } catch (e) {}
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) apply(JSON.parse(raw));
+    } catch (e) {}
+  }
+
+  /* ============ 起動 ============ */
+
+  $("pref").innerHTML = PREF.map(function (x, i) {
+    return '<option value="' + i + '"' + (x[0] === "東京都" ? " selected" : "") + '>' + x[0] + "</option>";
+  }).join("");
+
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="unit"]'), function (el) {
+    el.addEventListener("change", convertUnits);
+  });
+  document.getElementById("form").addEventListener("input", render);
+  document.getElementById("form").addEventListener("change", render);
+
+  $("reset").addEventListener("click", function () {
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    location.hash = "";
+    location.reload();
+  });
+  $("copyLink").addEventListener("click", function () {
+    var hash = btoa(unescape(encodeURIComponent(JSON.stringify(state()))));
+    var url = location.origin + location.pathname + "#" + hash;
+    var done = function (ok) {
+      $("saved").textContent = ok ? "リンクをコピーしました。別の端末で開くと、同じ入力が入ります。"
+                                  : "コピーできませんでした。アドレス欄のURLをそのまま控えてください。";
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function () { done(true); }, function () { done(false); });
+    } else { done(false); }
+    location.hash = hash;
+  });
+
+  load();
+  lastUnit = unitInfo().month ? "month" : "year";
+  renderWorks();
+  render();
+})();
+</script>
+</body>
+</html>
