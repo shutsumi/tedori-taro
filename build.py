@@ -26,6 +26,9 @@ HEAD = '''<!doctype html>
 <link rel="canonical" href="{base}">
 <meta name="theme-color" content="#C62828">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="手取り教えタロウ">
 <meta property="og:title" content="{title}">
