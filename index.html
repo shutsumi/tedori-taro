@@ -194,10 +194,13 @@ table.led tr.sum td.v { color: var(--red); }
 .callout b { color: var(--red); font-weight: 700; }
 
 /* ---------- 年収の壁（ものさし） ---------- */
-.wall-bar { position: relative; height: 18px; background: var(--yellow); border: 2px solid var(--ink); border-radius: 3px; margin: 44px 0 58px; }
+.wall-bar { position: relative; height: 18px; background: var(--yellow); border: 2px solid var(--ink); border-radius: 3px; margin: 44px 0 92px; }
 .wall-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--red); }
 .wall-tick { position: absolute; top: -8px; bottom: -8px; width: 2px; background: var(--ink); }
 .wall-tick span { position: absolute; top: 18px; left: 0; transform: translateX(-50%); font-size: 11px; color: var(--sub); white-space: nowrap; text-align: center; line-height: 1.5; }
+.wall-tick.r span { left: auto; right: 0; transform: none; text-align: right; }
+.wall-tick.low { bottom: -42px; }
+.wall-tick.low span { top: 52px; left: 0; transform: none; text-align: left; }
 .wall-tick span b { display: block; font-weight: 700; color: var(--ink); }
 .wall-you { position: absolute; top: -30px; transform: translateX(-50%); font-size: 12px; font-weight: 700; color: var(--red); white-space: nowrap; }
 
@@ -444,16 +447,19 @@ table.led tr.sum td.v { color: var(--red); }
     <h3>使っている数字</h3>
     <ul>
       <li>健康保険料率：協会けんぽ 令和8年度（令和8年3月分から適用）。介護保険料率 1.62%</li>
+      <li>子ども・子育て支援金 0.23%（労使折半。令和8年4月分から健康保険料に上乗せ）</li>
       <li>厚生年金 18.3%（労使折半）、雇用保険 労働者負担 0.5%（令和8年度・一般の事業）</li>
       <li>国民年金 月17,920円（令和8年度）</li>
-      <li>給与所得控除・基礎控除は令和7年度税制改正後の金額</li>
+      <li>給与所得控除・基礎控除は令和8年度税制改正後の令和8年分の金額（基礎控除は合計所得489万円以下で104万円、給与所得控除の最低保障は74万円）</li>
+      <li>扶養親族・配偶者控除の所得要件は62万円以下（給与だけなら年収136万円以下）</li>
     </ul>
     <h3>できないこと</h3>
     <ul>
       <li>生命保険料控除・地震保険料控除・医療費控除・住宅ローン控除・ふるさと納税は入っていない。該当すれば実際の手取りはこれより増える</li>
       <li>住民税の調整控除を入れていないため、住民税が数千円多めに出る</li>
-      <li>社会保険料は標準報酬月額の等級を使わず、年収から直接計算した概算</li>
+      <li>社会保険料は年収÷12を毎月の報酬とみなして標準報酬月額の等級に当てはめた額。賞与や残業による月ごとの変動は見ていない</li>
       <li>19〜22歳の家族は特定扶養控除のみ（特定親族特別控除は未対応）</li>
+      <li>国民健康保険の概算には子ども・子育て支援金分を入れていない（率が市区町村ごとに違うため）</li>
     </ul>
   </div>
 
@@ -487,28 +493,32 @@ table.led tr.sum td.v { color: var(--red); }
     ["佐賀県",10.55],["長崎県",10.06],["熊本県",10.08],["大分県",10.08],["宮崎県",9.77],
     ["鹿児島県",10.13],["沖縄県",9.44]];
   var KAIGO = 1.62;          // 介護保険料率（全国一律）
+  var SHIEN = 0.23;          // 子ども・子育て支援金率（被用者保険一律・令和8年4月分から）
   var KOSEI = 18.3;          // 厚生年金（労使折半）
   var KOYOU = 0.5;           // 雇用保険 労働者負担
   var KOKUNEN = 17920 * 12;  // 国民年金（年額）
-  var CAP_KENPO = 1390000;   // 健康保険 標準報酬月額の上限
-  var CAP_KOSEI = 650000;    // 厚生年金 標準報酬月額の上限
+  // 標準報酬月額（健康保険の50等級。千円単位）。報酬月額が L 以上なら S
+  var GRADE_L = [0,63,73,83,93,101,107,114,122,130,138,146,155,165,175,185,195,210,230,250,
+                 270,290,310,330,350,370,395,425,455,485,515,545,575,605,635,665,695,730,770,810,
+                 855,905,955,1005,1055,1115,1175,1235,1295,1355];
+  var GRADE_S = [58,68,78,88,98,104,110,118,126,134,142,150,160,170,180,190,200,220,240,260,
+                 280,300,320,340,360,380,410,440,470,500,530,560,590,620,650,680,710,750,790,830,
+                 880,930,980,1030,1090,1150,1210,1270,1330,1390];
+  var KOSEI_MIN = 88000, KOSEI_MAX = 650000;     // 厚生年金は1〜32等級
 
   /* ============ 控除 ============ */
 
-  function kyuyoKoujo(y) {                       // 給与所得控除（令和7年改正後）
+  function kyuyoKoujo(y) {                       // 給与所得控除（令和8年改正後・令和8・9年分の特例込み）
     if (y <= 0) return 0;
-    if (y <= 1900000) return Math.min(y, 650000);
-    if (y <= 3600000) return y * 0.30 + 80000;
+    if (y <= 3600000) return Math.min(y, Math.max(740000, y * 0.30 + 80000));
     if (y <= 6600000) return y * 0.20 + 440000;
     if (y <= 8500000) return y * 0.10 + 1100000;
     return 1950000;
   }
   function kisoIT(g) {                           // 基礎控除・所得税
-    if (g <= 1320000) return 950000;
-    if (g <= 3360000) return 880000;
-    if (g <= 4890000) return 680000;
-    if (g <= 6550000) return 630000;
-    if (g <= 23500000) return 580000;
+    if (g <= 4890000) return 1040000;            // 令和8・9年分（本則62万＋特例加算）
+    if (g <= 6550000) return 670000;
+    if (g <= 23500000) return 620000;
     if (g <= 24000000) return 480000;
     if (g <= 24500000) return 320000;
     if (g <= 25000000) return 160000;
@@ -531,7 +541,7 @@ table.led tr.sum td.v { color: var(--red); }
   function spouseDeduction(mineTotal, spouseTotal) {
     var t = spouseTier(mineTotal);
     if (t < 0) return [0, 0];
-    if (spouseTotal <= 580000) return [[380000,330000],[260000,220000],[130000,110000]][t];
+    if (spouseTotal <= 620000) return [[380000,330000],[260000,220000],[130000,110000]][t];
     var steps = [
       [ 950000, [380000,330000] ], [1000000, [360000,330000] ], [1050000, [310000,310000] ],
       [1100000, [260000,260000] ], [1150000, [210000,210000] ], [1200000, [160000,160000] ],
@@ -545,6 +555,15 @@ table.led tr.sum td.v { color: var(--red); }
       }
     }
     return [0, 0];
+  }
+  function hyojun(m) {                           // 報酬月額 → 健康保険の標準報酬月額
+    var i = GRADE_L.length - 1;
+    while (i > 0 && m < GRADE_L[i] * 1000) i--;
+    return GRADE_S[i] * 1000;
+  }
+  function honnin(base, pct) {                   // 本人負担（折半）。50銭以下切り捨て、50銭超切り上げ
+    var half = Math.round(base * pct * 10) / 2000;
+    return Math.ceil(half - 0.5);
   }
   function shotokuzei(k) {                       // 所得税（速算表＋復興特別所得税2.1%）
     k = Math.max(0, Math.floor(k / 1000) * 1000);
@@ -580,14 +599,17 @@ table.led tr.sum td.v { color: var(--red); }
     var goukei = kyuyoS + jigyo;                             // 合計所得金額
 
     // 社会保険料
-    var shaho = 0, kenpo = 0, nenkin = 0, koyou = 0, kokuho = 0, kokunen = 0;
+    var shaho = 0, kenpo = 0, shien = 0, nenkin = 0, koyou = 0, kokuho = 0, kokunen = 0;
     if (employed) {
+      // 年収÷12を毎月の報酬とみなし、標準報酬月額の等級に当てはめる（賞与なし）
       var m = salaryY / 12;
-      var rate = (p.kenpoRate + (p.age40 ? KAIGO : 0)) / 100 / 2;
-      kenpo  = Math.min(m, CAP_KENPO) * rate * 12;
-      nenkin = Math.min(m, CAP_KOSEI) * (KOSEI / 100 / 2) * 12;
-      koyou  = salaryY * (KOYOU / 100);
-      shaho = kenpo + nenkin + koyou;
+      var std = hyojun(m);
+      var stdK = Math.min(Math.max(std, KOSEI_MIN), KOSEI_MAX);
+      kenpo  = honnin(std, p.kenpoRate + (p.age40 ? KAIGO : 0)) * 12;
+      shien  = honnin(std, SHIEN) * 12;
+      nenkin = honnin(stdK, KOSEI) * 12;
+      koyou  = Math.ceil(Math.round(m * KOYOU * 10) / 1000 - 0.5) * 12;
+      shaho = kenpo + shien + nenkin + koyou;
     } else if (salesY > 0) {
       // 国民健康保険は自治体差が大きいので概算（入力があればそれを使う）
       var heads = 1 + (p.spouse === "yes" ? 1 : 0) + p.dep1 + p.dep2 + p.dep3;
@@ -615,7 +637,7 @@ table.led tr.sum td.v { color: var(--red); }
     var net = salaryY + (salesY - expY) + keep - shaho - it - juThisYear - jigyoZei - tsumitate;
 
     return { salaryY: salaryY, salesY: salesY, expY: expY, keep: keep, uketori: uketori, nozei: nozei,
-             kenpo: kenpo, nenkin: nenkin, koyou: koyou, kokuho: kokuho, kokunen: kokunen,
+             kenpo: kenpo, shien: shien, nenkin: nenkin, koyou: koyou, kokuho: kokuho, kokunen: kokunen,
              shaho: shaho, it: it, ju: ju, juThisYear: juThisYear, jigyoZei: jigyoZei,
              tsumitate: tsumitate, gross: gross, net: net, employed: employed,
              goukei: goukei, sp: sp, aoiro: aoiro };
@@ -782,6 +804,7 @@ table.led tr.sum td.v { color: var(--red); }
     if (r.employed) {
       h += row("健康保険", -r.kenpo, PREF[p.pref][0] + " " + p.kenpoRate.toFixed(2) + "%"
         + (p.age40 ? "＋介護 " + KAIGO + "%" : "") + " の半分");
+      h += row("子ども・子育て支援金", -r.shien, SHIEN + "% の半分");
       h += row("厚生年金", -r.nenkin, "18.3% の半分");
       h += row("雇用保険", -r.koyou, "0.5%");
     } else if (r.shaho > 0) {
@@ -810,7 +833,7 @@ table.led tr.sum td.v { color: var(--red); }
     }
     if (p.spouse === "yes" && r.sp[0] === 0 && p.spouseInc > 0) {
       c += '<div class="callout"><span class="t">配偶者控除は使えません</span>'
-        + '配偶者の年収か、あなたの所得が条件を超えています。配偶者の給与年収が約201万円を超えるか、'
+        + '配偶者の年収か、あなたの所得が条件を超えています。配偶者の給与年収が207万円を超えるか、'
         + 'あなたの合計所得が1,000万円を超えると、配偶者控除・配偶者特別控除はなくなります。</div>';
     }
     $("callouts").innerHTML = c;
@@ -823,21 +846,23 @@ table.led tr.sum td.v { color: var(--red); }
 
   /* ---- 年収の壁 ---- */
   var WALLS = [
-    { v: 123, t: "所得税", d: "本人に所得税がかかり始める" },
     { v: 130, t: "社会保険", d: "家族の扶養を外れ、自分で健康保険・年金に入る" },
-    { v: 160, t: "配偶者控除", d: "配偶者の控除が満額から減り始める" }
+    { v: 136, t: "扶養控除", d: "家族の扶養控除・配偶者控除の対象から外れる" },
+    { v: 169, t: "配偶者特別", d: "配偶者特別控除が満額から減り始める" },
+    { v: 178, t: "所得税", d: "本人に所得税がかかり始める" }
   ];
   function drawWall(p, r) {
     var show = p.mode === "emp" && p.salary > 0 && p.salary <= 250;
     $("wall").hidden = !show;
     if (!show) return;
-    var max = 260;
-    var pos = Math.min(p.salary / max * 100, 100);
+    var min = 80, max = 230;                     // 壁が固まっている範囲を広げて見せる
+    var pos = Math.max(0, Math.min((p.salary - min) / (max - min) * 100, 100));
     var html = '<div class="wall-fill" style="width:' + pos + '%"></div>'
       + '<div class="wall-you" style="left:' + pos + '%">あなた ' + p.salary + '万</div>';
-    WALLS.forEach(function (w) {
-      var x = w.v / max * 100;
-      html += '<div class="wall-tick" style="left:' + x + '%"><span><b>' + w.v + '万</b>' + w.t + '</span></div>';
+    WALLS.forEach(function (w, i) {
+      // 近い壁どうしは上段（左寄せ）と下段（右寄せ）に振り分ける
+      var x = (w.v - min) / (max - min) * 100;
+      html += '<div class="wall-tick' + (i % 2 ? ' low' : ' r') + '" style="left:' + x + '%"><span><b>' + w.v + '万</b>' + w.t + '</span></div>';
     });
     $("wallBar").innerHTML = html;
 
@@ -848,7 +873,8 @@ table.led tr.sum td.v { color: var(--red); }
       : "主な壁はすべて超えています。扶養から外れ、自分で社会保険に入る前提の計算です。";
     $("wallNote").textContent = "130万円の壁は、勤め先の規模や働く時間によっては106万円で来ます。"
       + "従業員51人以上の会社で週20時間以上働くなどの条件に当てはまる場合です。"
-      + "160万円を超えても控除は段階的に減るだけで、198万円までは残ります。";
+      + "136万円を超えると配偶者控除は配偶者特別控除に切り替わり、169万円から段階的に減って207万円でなくなります。"
+      + "136万円・178万円は令和8・9年分の特例込みの金額です。";
   }
 
   /* ---- 注記 ---- */
@@ -887,8 +913,8 @@ table.led tr.sum td.v { color: var(--red); }
     } else if (p.firstYear && r.ju > 0) {
       t = "1年目は住民税が引かれないぶん、手取りが多く見える。来年ぶんの "
         + f1(r.ju) + " 万円は別に取り分けておきなさい。";
-    } else if (p.mode === "emp" && p.salary > 0 && p.salary < 123) {
-      t = "年収 " + p.salary + " 万円なら、123万円までは所得税がかからないよ。";
+    } else if (p.mode === "emp" && p.salary > 0 && p.salary < 178) {
+      t = "年収 " + p.salary + " 万円なら、178万円までは所得税がかからないよ。";
     } else if (!r.employed && r.shaho > 0 && p.kokuho <= 0) {
       t = "国民健康保険は自治体で計算が違う。役所で試算してもらって、その額を入れ直すと正確になるよ。";
     }
