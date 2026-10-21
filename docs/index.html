@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>手取り計算シミュレーター｜手取り教えタロウ</title>
-<meta name="description" content="会社員・副業・フリーランスの手取りを月額で計算します。都道府県ごとの健康保険料率、配偶者控除・扶養控除、年収の壁、消費税（インボイス・簡易課税）まで含めた概算を無料で。令和8年度の料率に対応。">
+<meta name="description" content="会社員・副業・フリーランスの手取りを月額で計算します。都道府県ごとの健康保険料率、配偶者控除・扶養控除、年収の壁、消費税（インボイス・2割／3割特例・簡易課税）まで含めた概算と、半年分の月別の見通しを無料で。PDF・Excelで保存できます。令和8年度の料率に対応。">
 <link rel="canonical" href="https://shutsumi.github.io/tedori-taro/">
 <meta name="theme-color" content="#C62828">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -14,16 +14,15 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="手取り教えタロウ">
 <meta property="og:title" content="手取り計算シミュレーター｜手取り教えタロウ">
-<meta property="og:description" content="会社員・副業・フリーランスの手取りを月額で計算します。都道府県ごとの健康保険料率、配偶者控除・扶養控除、年収の壁、消費税（インボイス・簡易課税）まで含めた概算を無料で。令和8年度の料率に対応。">
+<meta property="og:description" content="会社員・副業・フリーランスの手取りを月額で計算します。都道府県ごとの健康保険料率、配偶者控除・扶養控除、年収の壁、消費税（インボイス・2割／3割特例・簡易課税）まで含めた概算と、半年分の月別の見通しを無料で。PDF・Excelで保存できます。令和8年度の料率に対応。">
 <meta property="og:url" content="https://shutsumi.github.io/tedori-taro/">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebApplication","name":"手取り教えタロウ",
-"url":"https://shutsumi.github.io/tedori-taro/","description":"会社員・副業・フリーランスの手取りを月額で計算します。都道府県ごとの健康保険料率、配偶者控除・扶養控除、年収の壁、消費税（インボイス・簡易課税）まで含めた概算を無料で。令和8年度の料率に対応。","applicationCategory":"FinanceApplication",
+"url":"https://shutsumi.github.io/tedori-taro/","description":"会社員・副業・フリーランスの手取りを月額で計算します。都道府県ごとの健康保険料率、配偶者控除・扶養控除、年収の壁、消費税（インボイス・2割／3割特例・簡易課税）まで含めた概算と、半年分の月別の見通しを無料で。PDF・Excelで保存できます。令和8年度の料率に対応。","applicationCategory":"FinanceApplication",
 "operatingSystem":"Web","inLanguage":"ja",
-"offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},
-"author":{"@type":"Person","name":"うつみしょうた","url":"https://shutsumi.github.io/"}}
+"offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"}}
 </script>
 <style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -173,6 +172,7 @@ input[type="number"], select {
   border: 2px solid var(--ink); border-radius: 6px; padding: 4px 9px; text-align: right; width: 108px;
 }
 select { text-align: left; width: auto; min-width: 180px; font-size: 14px; font-weight: 400; }
+@media (max-width: 560px) { .f > select { grid-column: 1 / -1; width: 100%; min-width: 0; } }
 input[type="number"]:focus, select:focus { outline: 0; border-color: var(--red); background: #fff8e8; }
 input[type="number"]:focus-visible, select:focus-visible, input[type="checkbox"]:focus-visible { outline: 3px solid var(--yellow); outline-offset: 1px; }
 .unit { font-size: 12px; color: var(--sub); }
@@ -254,6 +254,24 @@ table.led tr.sum td.v { color: var(--red); }
 .notes a { color: var(--red); }
 .foot { text-align: center; font-size: 12px; color: var(--sub); padding: 0 0 72px; }
 .foot a { color: var(--red); }
+
+/* ---------- 半年の見通し ---------- */
+.plan-lead { font-size: 13.5px; margin: 0 0 6px; }
+.scroll { overflow-x: auto; margin: 18px 0 0; -webkit-overflow-scrolling: touch; }
+table.grid { border-collapse: collapse; font-size: 13px; min-width: 100%; }
+table.grid th, table.grid td { padding: 7px 6px; border-bottom: 2px dotted var(--line); white-space: nowrap; text-align: right; font-variant-numeric: tabular-nums; }
+table.grid th { font-size: 11px; color: var(--sub); font-weight: 700; border-bottom: 2px solid var(--ink); }
+table.grid th small { display: block; font-weight: 400; }
+table.grid th:first-child, table.grid td:first-child { text-align: left; position: sticky; left: 0; background: var(--card); z-index: 1; }
+table.grid input[type="number"] { width: 62px; font-size: 14px; padding: 2px 6px; }
+table.grid input.over { border-color: var(--red); }
+table.grid .wn { font-weight: 500; }
+table.grid .tent { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--sub); cursor: pointer; }
+table.grid .tent input { accent-color: var(--red); }
+table.grid tr.sub td { font-size: 12px; color: var(--sub); }
+table.grid tr.sum td { border-top: 3px solid var(--ink); border-bottom: 0; font-weight: 700; font-size: 14px; color: var(--red); }
+table.grid tr.sum td:first-child { color: var(--ink); }
+.plan-note { font-size: 12px; color: var(--sub); margin: 14px 0 0; line-height: 1.9; }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
@@ -385,6 +403,16 @@ table.led tr.sum td.v { color: var(--red); }
             <label for="dep3">同 70歳以上</label>
             <span class="amt"><input type="number" id="dep3" value="0" min="0" max="10" step="1"><span class="unit">人</span></span>
           </div>
+          <div class="f">
+            <label for="kids">16歳未満の子</label>
+            <span class="amt"><input type="number" id="kids" value="0" min="0" max="10" step="1"><span class="unit">人</span></span>
+            <span class="note">扶養控除の対象外（児童手当に置き換わっている）ので、所得税・住民税は変わらない。国民健康保険の人数には入る。</span>
+          </div>
+          <div class="f" id="fPreschool">
+            <label for="preschool">うち小学校入学前</label>
+            <span class="amt"><input type="number" id="preschool" value="0" min="0" max="10" step="1"><span class="unit">人</span></span>
+            <span class="note">国民健康保険の均等割が半額になる。</span>
+          </div>
         </div>
 
         <p class="sub-h" id="hBiz">業務委託</p>
@@ -404,10 +432,11 @@ table.led tr.sum td.v { color: var(--red); }
               <option value="menzei">免税（インボイス未登録・消費税は請求している）</option>
               <option value="none">消費税を請求していない</option>
               <option value="2wari">2割特例（2026年分まで）</option>
+              <option value="3wari">3割特例（2027・2028年分）</option>
               <option value="kani5">簡易課税・第五種（50%）</option>
               <option value="honsoku">本則課税</option>
             </select>
-            <span class="note">インボイス未登録なら「免税」。報酬に消費税を上乗せしていない契約なら「請求していない」。</span>
+            <span class="note">インボイス未登録なら「免税」。報酬に消費税を上乗せしていない契約なら「請求していない」。2割特例は2026年分まで、2027・2028年分は3割特例が使える。</span>
           </div>
           <div class="f" id="fKokuho">
             <label for="kokuho">国民健康保険料（月額）</label>
@@ -455,6 +484,34 @@ table.led tr.sum td.v { color: var(--red); }
     <div id="callouts"></div>
   </div>
 
+  <div class="paper" id="plan">
+    <div class="sec-head"><span class="kanji">月</span><h2><em>半年の見通し</em></h2></div>
+    <p class="plan-lead">契約先ごとに、月ごとの売上（税抜・万円）を入れてください。最初は上で入れた金額が毎月続く前提で入っています。決まっていない契約は「見込み」に印を付けます。</p>
+    <div class="fields">
+      <div class="f">
+        <label for="planStart">始まりの月</label>
+        <select id="planStart"></select>
+      </div>
+      <div class="f" id="fCtax27">
+        <label for="ctax27">2027年1月からの消費税</label>
+        <select id="ctax27">
+          <option value="3wari">3割特例</option>
+          <option value="kani5">簡易課税・第五種（50%）</option>
+          <option value="honsoku">本則課税</option>
+          <option value="menzei">免税（インボイス未登録・消費税は請求している）</option>
+          <option value="none">消費税を請求していない</option>
+        </select>
+        <span class="note">2割特例は2026年分で終わる。インボイス登録で課税事業者になった個人なら、2027・2028年分は売上の消費税の3割を納める「3割特例」が使える（届出不要）。</span>
+      </div>
+      <div class="f">
+        <label class="chk" for="planTent"><input type="checkbox" id="planTent" checked> 見込みの契約も含めて計算する</label>
+      </div>
+    </div>
+    <div class="scroll"><table class="grid" id="planIn"></table></div>
+    <div class="scroll"><table class="grid" id="planOut"></table></div>
+    <p class="plan-note">所得税・住民税・個人事業税は、この6か月を2倍した額を1年の収入とみなして計算し、各月のもうけに応じて割り振った「取り分けの目安」です。実際に払う月（確定申告は3月、住民税は6月から）とは違います。社会保険料は年額の12分の1を毎月に置いています。</p>
+  </div>
+
   <div class="paper" id="wall" hidden>
     <div class="sec-head"><span class="kanji">壁</span><h2><em>年収の壁</em></h2></div>
     <p style="font-size:14px;margin:0" id="wallLead">—</p>
@@ -464,6 +521,8 @@ table.led tr.sum td.v { color: var(--red); }
 
   <div class="paper">
     <div class="tools">
+      <button type="button" class="btn" id="savePdf">PDFで保存</button>
+      <button type="button" class="btn" id="saveXlsx">Excelで保存</button>
       <button type="button" class="btn" id="copyLink">この入力のリンクをコピー</button>
       <button type="button" class="btn" id="reset">入力を消す</button>
     </div>
@@ -493,8 +552,7 @@ table.led tr.sum td.v { color: var(--red); }
   </div>
 
   <div class="foot">
-    <p style="margin:0 0 8px">税額の確定や申告の判断は、税務署や税理士に確認してください。このページは概算を出すための道具です。</p>
-    <p style="margin:0"><a href="https://shutsumi.github.io/" target="_blank" rel="noopener">うつみしょうた</a></p>
+    <p style="margin:0">税額の確定や申告の判断は、税務署や税理士に確認してください。このページは概算を出すための道具です。</p>
   </div>
 </div>
 
@@ -615,9 +673,11 @@ table.led tr.sum td.v { color: var(--red); }
     // 消費税（税別で受け取る前提）
     var uketori = p.ctax === "none" ? 0 : salesY * 0.10, nozei = 0;
     if (p.ctax === "2wari")        nozei = uketori * 0.20;
+    else if (p.ctax === "3wari")   nozei = uketori * 0.30;
     else if (p.ctax === "kani5")   nozei = uketori * 0.50;
     else if (p.ctax === "honsoku") nozei = Math.max(0, uketori - expY * 0.10);
     var keep = uketori - nozei;
+    if (p.keepY != null) keep = p.keepY;          // 半年の見通しから月ごとの方式で出した額を使う
 
     // 事業所得（青色申告特別控除は事業の黒字が上限）
     var jigyoPre = Math.max(0, salesY - expY + keep);
@@ -641,7 +701,9 @@ table.led tr.sum td.v { color: var(--red); }
       shaho = kenpo + shien + nenkin + koyou;
     } else if (salesY > 0) {
       // 国民健康保険は自治体差が大きいので概算（入力があればそれを使う）
-      var heads = 1 + (p.spouse === "yes" ? 1 : 0) + p.dep1 + p.dep2 + p.dep3;
+      // 16歳未満の子も国保の均等割はかかる（未就学児は半額）
+      var heads = 1 + (p.spouse === "yes" ? 1 : 0) + p.dep1 + p.dep2 + p.dep3
+                + p.kids - Math.min(p.preschool, p.kids) / 2;
       var rate2 = p.age40 ? 0.115 : 0.098;
       kokuho = p.kokuho > 0 ? p.kokuho * MAN * 12
              : Math.min(1060000, Math.max(0, goukei - 430000) * rate2 + 60000 * heads);
@@ -706,7 +768,11 @@ table.led tr.sum td.v { color: var(--red); }
     var row = ev.target.closest(".work");
     if (!row) return;
     var i = +row.dataset.i;
-    if (ev.target.classList.contains("wname")) works[i].name = ev.target.value;
+    if (ev.target.classList.contains("wname")) {
+      works[i].name = ev.target.value;
+      var c = $("planIn").querySelector('[data-wn="' + i + '"]');
+      if (c) c.textContent = workName(works[i], i);
+    }
     else if (ev.target.classList.contains("wamt")) works[i].amount = parseFloat(ev.target.value) || 0;
     else return;
     render();
@@ -715,11 +781,11 @@ table.led tr.sum td.v { color: var(--red); }
     var b = ev.target.closest("[data-del]");
     if (!b) return;
     works.splice(+b.dataset.del, 1);
-    renderWorks(); render();
+    renderWorks(); renderPlanIn(); render();
   });
   $("addWork").addEventListener("click", function () {
     works.push({ name: "", amount: 0 });
-    renderWorks(); render();
+    renderWorks(); renderPlanIn(); render();
     var ns = $("works").querySelectorAll(".wname");
     if (ns.length) ns[ns.length - 1].focus();
   });
@@ -738,12 +804,16 @@ table.led tr.sum td.v { color: var(--red); }
       pref: pi, kenpoRate: PREF[pi][1], age40: $("age40").checked,
       spouse: $("spouse").value, spouseInc: num("spouseInc"),
       dep1: num("dep1"), dep2: num("dep2"), dep3: num("dep3"),
+      kids: num("kids"), preschool: num("preschool"),
       aoiro: +$("aoiro").value, ctax: $("ctax").value, kokuho: num("kokuho"),
       ideco: yen("ideco"), kyosai: yen("kyosai"), firstYear: $("firstYear").checked
     };
   }
 
+  var LEDGER = [];                               // 書き出し用に明細を控える
+  var plainText = function (h) { var d = document.createElement("div"); d.innerHTML = h; return d.textContent; };
   function row(label, val, memo, cls) {
+    LEDGER.push({ label: plainText(label), memo: memo ? plainText(memo) : "", val: val });
     return '<tr' + (cls ? ' class="' + cls + '"' : '') + '><td>' + label
       + (memo ? '<span class="memo">' + memo + '</span>' : '') + '</td>'
       + '<td class="v">' + (val < 0 ? "−" : "") + f2(Math.abs(val)) + '</td>'
@@ -791,8 +861,186 @@ table.led tr.sum td.v { color: var(--red); }
       if (v) $(id).value = Math.round(v * k * 100) / 100;
     });
     works.forEach(function (w) { if (w.amount) w.amount = Math.round(w.amount * k * 100) / 100; });
-    renderWorks();
+    renderWorks(); renderPlanIn();
     lastUnit = now;
+  }
+
+  /* ---- 半年の見通し ---- */
+
+  var expMonths = {};                            // 月ごとの経費（万円）。入れた月だけ持つ
+  var ymKey = function (y, m) { return y + "-" + (m < 10 ? "0" : "") + m; };
+
+  function buildPlanStart() {
+    var d = new Date(), y = d.getFullYear(), m = d.getMonth() + 1, h = "";
+    for (var i = -1; i <= 12; i++) {
+      var mm = m + i, yy = y + Math.floor((mm - 1) / 12);
+      mm = ((mm - 1) % 12 + 12) % 12 + 1;
+      h += '<option value="' + ymKey(yy, mm) + '"' + (i === 1 ? " selected" : "") + '>'
+        + yy + "年" + mm + "月</option>";
+    }
+    $("planStart").innerHTML = h;
+  }
+  function planMonths() {
+    var v = ($("planStart").value || "").split("-"), y = +v[0], m = +v[1], ks = [];
+    for (var i = 0; i < 6; i++) {
+      ks.push(ymKey(y + Math.floor((m - 1 + i) / 12), (m - 1 + i) % 12 + 1));
+    }
+    return ks;
+  }
+  var monthLabel = function (k, first) {
+    var y = k.slice(0, 4), m = +k.slice(5);
+    return m + "月" + (first || m === 1 ? "<small>" + y + "</small>" : "");
+  };
+  // 上の入力から出す1か月あたりの金額（万円）
+  var baseWork = function (w) { return Math.round((w.amount || 0) / (unitInfo().month ? 1 : 12) * 10) / 10; };
+  var baseExp = function () { return Math.round((parseFloat($("expense").value) || 0) / (unitInfo().month ? 1 : 12) * 10) / 10; };
+  var workAt = function (w, k) { return w.months && k in w.months ? w.months[k] : baseWork(w); };
+  var expAt = function (k) { return k in expMonths ? expMonths[k] : baseExp(); };
+
+  function renderPlanIn() {
+    var ks = planMonths();
+    var cell = function (attr, k, v, over, label) {
+      return '<td><input type="number" ' + attr + ' data-k="' + k + '" value="' + v + '" min="0" max="10000" step="1"'
+        + (over ? ' class="over"' : '') + ' aria-label="' + esc(label) + '"></td>';
+    };
+    var h = '<thead><tr><th>契約先（万円）</th>'
+      + ks.map(function (k, j) { return "<th>" + monthLabel(k, j === 0) + "</th>"; }).join("") + "</tr></thead><tbody>";
+    works.forEach(function (w, i) {
+      h += '<tr><td><span class="wn" data-wn="' + i + '">' + esc(workName(w, i)) + '</span>'
+        + '<label class="tent"><input type="checkbox" data-tent="' + i + '"' + (w.tent ? " checked" : "") + '>見込み</label></td>'
+        + ks.map(function (k) {
+            return cell('data-w="' + i + '"', k, workAt(w, k), w.months && k in w.months, workName(w, i) + " " + k);
+          }).join("") + "</tr>";
+    });
+    h += '<tr><td><span class="wn">経費</span></td>'
+      + ks.map(function (k) { return cell('data-w="exp"', k, expAt(k), k in expMonths, "経費 " + k); }).join("") + "</tr></tbody>";
+    $("planIn").innerHTML = h;
+  }
+
+  // 自分で書き換えていない欄は、上の入力に合わせて数字を追従させる
+  function syncPlanIn() {
+    Array.prototype.forEach.call($("planIn").querySelectorAll("input[type=number]"), function (el) {
+      if (el === document.activeElement) return;
+      var k = el.dataset.k, w = el.dataset.w;
+      el.value = w === "exp" ? expAt(k) : workAt(works[+w], k);
+    });
+  }
+
+  $("planIn").addEventListener("input", function (ev) {
+    var el = ev.target, k = el.dataset.k;
+    if (el.dataset.tent != null) { works[+el.dataset.tent].tent = el.checked; render(); return; }
+    if (!k) return;
+    var store = el.dataset.w === "exp" ? expMonths : (works[+el.dataset.w].months = works[+el.dataset.w].months || {});
+    if (el.value === "") delete store[k]; else store[k] = parseFloat(el.value) || 0;
+    el.classList.toggle("over", k in store);
+    render();
+  });
+  $("planIn").addEventListener("change", function (ev) {
+    if (ev.target.dataset.tent != null) { works[+ev.target.dataset.tent].tent = ev.target.checked; render(); }
+  });
+  $("planStart").addEventListener("change", function () { renderPlanIn(); render(); });
+  $("ctax27").addEventListener("change", render);
+  $("planTent").addEventListener("change", render);
+
+  var monthNozei = function (method, uk, exp) {
+    if (method === "2wari") return uk * 0.20;
+    if (method === "3wari") return uk * 0.30;
+    if (method === "kani5") return uk * 0.50;
+    if (method === "honsoku") return Math.max(0, uk - exp * 0.10);
+    return 0;
+  };
+
+  function calcPlan(p) {
+    var ks = planMonths(), incl = $("planTent").checked;
+    var ms = ks.map(function (k) {
+      var sales = 0, tent = 0;
+      works.forEach(function (w) {
+        var v = workAt(w, k) * MAN;
+        if (w.tent) { tent += v; if (!incl) return; }
+        sales += v;
+      });
+      return { k: k, year: +k.slice(0, 4), sales: sales, tent: tent, exp: Math.min(expAt(k) * MAN, sales) };
+    });
+    var sumS = ms.reduce(function (a, x) { return a + x.sales; }, 0);
+    var sumE = ms.reduce(function (a, x) { return a + x.exp; }, 0);
+
+    // 消費税は月ごとに、その年の方式で計算する（2026年は2割特例、2027年からは3割特例など）
+    ms.forEach(function (x) {
+      var method = x.year <= 2026 ? p.ctax : $("ctax27").value;
+      if (method === "3wari" && x.year <= 2026) method = "2wari";
+      if (method === "2wari" && x.year >= 2027) method = "3wari";
+      x.method = method;
+      x.uk = method === "none" ? 0 : x.sales * 0.10;
+      x.nozei = monthNozei(method, x.uk, x.exp);
+    });
+    var keep6 = ms.reduce(function (a, x) { return a + x.uk - x.nozei; }, 0);
+
+    // 6か月を2倍して1年とみなす
+    var q = {};
+    for (var key in p) q[key] = p[key];
+    q.sales = sumS * 2 / MAN;
+    q.expense = sumE * 2 / MAN;
+    q.keepY = keep6 * 2;
+    q.firstYear = false;
+    var r = calc(q);
+    var taxes = r.it + r.ju + r.jigyoZei;
+    var salM = r.salaryY / 12;
+    ms.forEach(function (x) {
+      x.salary = salM;
+      x.base = Math.max(0, salM + x.sales - x.exp);
+    });
+    var sumBase = ms.reduce(function (a, x) { return a + x.base; }, 0);
+    ms.forEach(function (x) {
+      x.shaho = r.shaho / 12;
+      x.tax = sumBase > 0 ? taxes / 2 * x.base / sumBase : 0;
+      x.tsumitate = r.tsumitate / 12;
+      x.use = x.salary + x.sales + x.uk - x.exp - x.nozei - x.shaho - x.tax - x.tsumitate;
+    });
+    return { ms: ms, annual: r, incl: incl };
+  }
+
+  // 書き出しと画面で同じ行を使う
+  function planRows(pl) {
+    var ms = pl.ms, rows = [];
+    var any = function (f) { return ms.some(function (x) { return x[f] > 0; }); };
+    var add = function (label, f, sign, cls) { rows.push({ label: label, vals: ms.map(function (x) { return sign * x[f]; }), cls: cls || "" }); };
+    add("売上（税抜）", "sales", 1);
+    if (any("tent")) add(pl.incl ? "　うち見込み" : "　見込み（計算に含めない）", "tent", 1, "sub");
+    if (any("salary")) add("給与（額面）", "salary", 1);
+    if (any("uk")) add("受け取る消費税", "uk", 1);
+    if (any("exp")) add("経費", "exp", -1);
+    if (any("nozei")) add("消費税の納税分", "nozei", -1);
+    if (any("shaho")) add("社会保険料", "shaho", -1);
+    add("所得税・住民税・事業税の取り分け", "tax", -1);
+    if (any("tsumitate")) add("iDeCo・小規模企業共済", "tsumitate", -1);
+    add("使えるお金", "use", 1, "sum");
+    rows.forEach(function (r) {
+      if (r.cls === "sub") { r.total = r.vals.reduce(function (a, v) { return a + v; }, 0); return; }
+      r.total = r.vals.reduce(function (a, v) { return a + v; }, 0);
+    });
+    return rows;
+  }
+
+  var lastPlan = null;
+  function renderPlan(p) {
+    var show = p.mode !== "emp";
+    $("plan").hidden = !show;
+    lastPlan = null;
+    if (!show) return;
+    syncPlanIn();
+    var pl = calcPlan(p);
+    var ks = planMonths();
+    $("fCtax27").style.display = ks.some(function (k) { return +k.slice(0, 4) >= 2027; }) ? "" : "none";
+    var fm = function (v) { return (v < 0 ? "−" : "") + (Math.abs(v) / MAN).toFixed(1); };
+    var rows = planRows(pl);
+    var h = "<thead><tr><th>万円</th>" + ks.map(function (k, j) { return "<th>" + monthLabel(k, j === 0) + "</th>"; }).join("")
+      + "<th>6か月計</th></tr></thead><tbody>";
+    rows.forEach(function (r) {
+      h += '<tr class="' + r.cls + '"><td>' + r.label + "</td>"
+        + r.vals.map(function (v) { return "<td>" + fm(v) + "</td>"; }).join("") + "<td>" + fm(r.total) + "</td></tr>";
+    });
+    $("planOut").innerHTML = h + "</tbody>";
+    lastPlan = { ks: ks, rows: rows, pl: pl };
   }
 
   function render() {
@@ -820,6 +1068,7 @@ table.led tr.sum td.v { color: var(--red); }
     }
 
     var h = "";
+    LEDGER = [];
     if (r.salaryY > 0) h += row("給与（額面）", r.salaryY);
     if (r.salesY > 0) {
       var mul = unitInfo().mul;
@@ -867,6 +1116,8 @@ table.led tr.sum td.v { color: var(--red); }
     }
     $("callouts").innerHTML = c;
 
+    $("fPreschool").style.display = p.kids > 0 ? "" : "none";
+    renderPlan(p);
     drawWall(p, r);
     drawNotes(p, r);
     taro(p, r);
@@ -909,7 +1160,7 @@ table.led tr.sum td.v { color: var(--red); }
   /* ---- 注記 ---- */
   function drawNotes(p, r) {
     var n = [];
-    n.push("社会保険料は給与から天引きされる本人負担分です。会社が同額を負担しています。");
+    if (r.employed) n.push("社会保険料は給与から天引きされる本人負担分です。会社が同額を負担しています。");
     if (!r.employed && r.shaho > 0 && p.kokuho <= 0) {
       n.push("<b>国民健康保険は概算です。</b>自治体によって計算方法が違い、実際の額とずれます。お住まいの市区町村の窓口やサイトで試算し、その額を入れ直すと正確になります。");
     }
@@ -917,7 +1168,15 @@ table.led tr.sum td.v { color: var(--red); }
       n.push("<b>売上が1,000万円を超えています。</b>2年後には消費税を納める義務が出ます（課税事業者）。");
     }
     if (p.mode !== "emp" && p.ctax === "2wari") {
-      n.push("2割特例が使えるのは、個人事業主の場合2026年分の申告までです。2027年分からは簡易課税か本則課税になり、簡易課税を使うには前年12月31日までの届出が必要です。");
+      n.push("2割特例が使えるのは、個人事業主の場合2026年分の申告までです。2027・2028年分は、売上の消費税の3割を納める「3割特例」が使えます（届出不要）。簡易課税に切り替えるなら届出が必要です。");
+    }
+    if (p.mode !== "emp" && p.ctax === "3wari") {
+      n.push("3割特例は、インボイス登録で課税事業者になった個人事業者が2027・2028年分に使える経過措置です。2年前の売上が1,000万円を超える年は使えません。");
+    }
+    if (p.kids > 0) {
+      n.push("<b>16歳未満の子どもは扶養控除の対象外です</b>（児童手当に置き換わっています）。そのため所得税・住民税の額は変わりません。"
+        + (r.employed ? "会社の健康保険も、子どもの人数で保険料は変わりません。"
+                      : "国民健康保険の概算には人数分の均等割を入れています（小学校入学前の子は半額）。"));
     }
     if (r.aoiro > 0 && r.aoiro < 650000 && p.aoiro === 65) {
       n.push("青色申告特別控除は事業の黒字の範囲までしか引けないため、満額の65万円は使えていません。");
@@ -955,12 +1214,13 @@ table.led tr.sum td.v { color: var(--red); }
   /* ============ 保存 ============ */
 
   var IDS = ["salary","expense","pref","age40","spouse","spouseInc",
-             "dep1","dep2","dep3","aoiro","ctax","kokuho","ideco","kyosai","firstYear"];
+             "dep1","dep2","dep3","kids","preschool","aoiro","ctax","kokuho","ideco","kyosai","firstYear",
+             "planStart","ctax27","planTent"];
   var KEY = "tedori-taro-v2";
 
   function state() {
     var o = { mode: document.querySelector('input[name="mode"]:checked').value,
-              unit: unitInfo().month ? "month" : "year", works: works };
+              unit: unitInfo().month ? "month" : "year", works: works, expMonths: expMonths };
     IDS.forEach(function (id) { o[id] = $(id).type === "checkbox" ? $(id).checked : $(id).value; });
     return o;
   }
@@ -979,9 +1239,19 @@ table.led tr.sum td.v { color: var(--red); }
     });
     if (Array.isArray(o.works)) {
       works = o.works.map(function (w) {
-        return { name: typeof w.name === "string" ? w.name.slice(0, 20) : "", amount: Number(w.amount) || 0 };
+        return { name: typeof w.name === "string" ? w.name.slice(0, 20) : "", amount: Number(w.amount) || 0,
+                 tent: !!w.tent, months: cleanMonths(w.months) };
       });
     }
+    if (o.expMonths) expMonths = cleanMonths(o.expMonths);
+    if (!$("planStart").value) $("planStart").selectedIndex = 2;   // 古い月が保存されていたら来月に戻す
+  }
+  function cleanMonths(m) {
+    var o = {};
+    if (m && typeof m === "object") for (var k in m) {
+      if (/^\d{4}-\d{2}$/.test(k) && isFinite(m[k])) o[k] = Number(m[k]);
+    }
+    return o;
   }
   function save() {
     try { localStorage.setItem(KEY, JSON.stringify(state())); } catch (e) {}
@@ -1030,9 +1300,191 @@ table.led tr.sum td.v { color: var(--red); }
     location.hash = hash;
   });
 
+  /* ============ 書き出し（PDF・Excel） ============ */
+
+  var libs = {};
+  function loadScript(url) {
+    if (!libs[url]) libs[url] = new Promise(function (ok, ng) {
+      var el = document.createElement("script");
+      el.src = url; el.onload = ok; el.onerror = function () { delete libs[url]; ng(new Error("load")); };
+      document.head.appendChild(el);
+    });
+    return libs[url];
+  }
+  var say = function (t) { $("saved").textContent = t; };
+  var today = function () {
+    var d = new Date();
+    return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+  };
+
+  // Artifact では downloads の機能で、GitHub Pages では普通のダウンロードで保存する
+  function saveFile(name, blob) {
+    var viaLink = function () {
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+      say(name + " を保存しました。");
+    };
+    if (!(window.claude && window.claude.use)) { viaLink(); return Promise.resolve(); }
+    return window.claude.use("downloads").then(function (dl) {
+      if (!dl) { viaLink(); return; }
+      return dl.save({ filename: name, data: blob }).then(function () { say(name + " を保存しました。"); }, function (e) {
+        say(e && e.code === "declined" ? "保存をやめました。" : "この画面では保存できませんでした。");
+      });
+    });
+  }
+
+  function conditions(p) {
+    var opt = function (id) { var el = $(id); return el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : ""; };
+    var modeText = { emp: "会社員", both: "会社員と副業", free: "フリーランス" }[p.mode];
+    var c = [["作成日", today()], ["働き方", modeText], ["都道府県", PREF[p.pref][0]],
+             ["40歳以上65歳未満", p.age40 ? "はい" : "いいえ"]];
+    if (p.salary > 0) c.push(["給与（年額・額面）", p.salary + " 万円"]);
+    if (p.mode !== "emp") {
+      works.forEach(function (w, i) {
+        c.push(["業務委託：" + workName(w, i) + (w.tent ? "（見込み）" : ""), (Math.round(baseWork(w) * 10) / 10) + " 万円／月"]);
+      });
+      c.push(["経費（年額）", p.expense + " 万円"], ["青色申告特別控除", opt("aoiro")], ["消費税", opt("ctax")]);
+    }
+    c.push(["配偶者", opt("spouse") + (p.spouse === "yes" ? "（年収 " + p.spouseInc + " 万円）" : "")]);
+    if (p.dep1 + p.dep2 + p.dep3 > 0) c.push(["扶養する家族", "16〜18・23〜69歳 " + p.dep1 + "人／19〜22歳 " + p.dep2 + "人／70歳以上 " + p.dep3 + "人"]);
+    if (p.kids > 0) c.push(["16歳未満の子", p.kids + " 人（うち小学校入学前 " + Math.min(p.preschool, p.kids) + " 人）"]);
+    if (p.ideco + p.kyosai > 0) c.push(["iDeCo・小規模企業共済（年額）", (p.ideco + p.kyosai) + " 万円"]);
+    return c;
+  }
+  var noteList = function () {
+    return Array.prototype.map.call(document.querySelectorAll(".notes li"), function (li) { return li.textContent; });
+  };
+
+  $("saveXlsx").addEventListener("click", function () {
+    say("Excelファイルを作っています…");
+    loadScript("https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js").then(function () {
+      var p = read(), X = window.XLSX, wb = X.utils.book_new();
+      var yen = function (v) { return Math.round(v); };
+      var s1 = [["内訳", "月額（円）", "年額（円）", "メモ"]].concat(LEDGER.map(function (l) {
+        return [l.label, yen(l.val / 12), yen(l.val), l.memo];
+      }));
+      var ws1 = X.utils.aoa_to_sheet(s1);
+      ws1["!cols"] = [{ wch: 30 }, { wch: 14 }, { wch: 14 }, { wch: 34 }];
+      X.utils.book_append_sheet(wb, ws1, "手取り（年間）");
+      if (lastPlan) {
+        var head = ["項目（円）"].concat(lastPlan.ks.map(function (k) { return k.replace("-", "年") + "月"; }), ["6か月計"]);
+        var s2 = [head].concat(lastPlan.rows.map(function (r) { return [r.label.trim()].concat(r.vals.map(yen), [yen(r.total)]); }));
+        var s2in = [[], ["入力した売上（万円）"].concat(lastPlan.ks.map(function () { return ""; }))];
+        works.forEach(function (w, i) {
+          s2in.push([workName(w, i) + (w.tent ? "（見込み）" : "")].concat(lastPlan.ks.map(function (k) { return workAt(w, k); })));
+        });
+        s2in.push(["経費"].concat(lastPlan.ks.map(function (k) { return expAt(k); })));
+        var ws2 = X.utils.aoa_to_sheet(s2.concat(s2in));
+        ws2["!cols"] = [{ wch: 28 }].concat(head.slice(1).map(function () { return { wch: 12 }; }));
+        X.utils.book_append_sheet(wb, ws2, "半年の見通し");
+      }
+      var ws3 = X.utils.aoa_to_sheet([["項目", "内容"]].concat(conditions(p)));
+      ws3["!cols"] = [{ wch: 30 }, { wch: 50 }];
+      X.utils.book_append_sheet(wb, ws3, "入力した条件");
+      var ws4 = X.utils.aoa_to_sheet([["計算の前提・できないこと"]].concat(noteList().map(function (t) { return [t]; })));
+      ws4["!cols"] = [{ wch: 120 }];
+      X.utils.book_append_sheet(wb, ws4, "注意");
+      var buf = X.write(wb, { bookType: "xlsx", type: "array" });
+      return saveFile("手取り_" + today() + ".xlsx",
+        new Blob([buf], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }));
+    }).catch(function () { say("Excelファイルを作れませんでした。通信状況を確かめて、もう一度押してください。"); });
+  });
+
+  function reportHtml(p) {
+    var C = { ink: "#4A3524", sub: "#8A7560", red: "#C62828", line: "#D9C7A8", card: "#FFFCF4" };
+    var td = "padding:5px 6px;border-bottom:1px dotted " + C.line + ";";
+    var num = "text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;";
+    var h2 = function (t) { return '<h2 style="font-size:14px;color:' + C.red + ';margin:18px 0 6px;border-bottom:2px solid ' + C.ink + ';padding-bottom:3px">' + t + "</h2>"; };
+    var m = function (v) { return (v < 0 ? "−" : "") + (Math.abs(v) / MAN).toFixed(2); };
+    var y = function (v) { return (v < 0 ? "−" : "") + (Math.abs(v) / MAN).toFixed(1); };
+    var h = '<div style="font-family:\'Zen Maru Gothic\',sans-serif;color:' + C.ink + ';background:' + C.card + ';padding:8px 4px;font-size:11px;line-height:1.6;width:690px;box-sizing:border-box">'
+      + '<div style="font-family:\'Dela Gothic One\',sans-serif;font-size:22px;color:' + C.red + '">手取りの見通し</div>'
+      + '<div style="color:' + C.sub + '">' + today() + " 時点の概算</div>";
+    h += h2("入力した条件") + '<table style="border-collapse:collapse;width:100%">'
+      + conditions(p).slice(1).map(function (c) {
+          return '<tr><td style="' + td + 'width:38%;color:' + C.sub + '">' + esc(c[0]) + '</td><td style="' + td + '">' + esc(c[1]) + "</td></tr>";
+        }).join("") + "</table>";
+    h += h2("手取り（1年を通した場合・万円）") + '<table style="border-collapse:collapse;width:100%"><tr>'
+      + '<th style="' + td + 'text-align:left">内訳</th><th style="' + td + num + '">月額</th><th style="' + td + num + '">年額</th></tr>'
+      + LEDGER.map(function (l) {
+          var sum = l.label === "手取り";
+          var st = sum ? "font-weight:700;color:" + C.red + ";border-top:2px solid " + C.ink + ";" : "";
+          return '<tr><td style="' + td + st + '">' + esc(l.label)
+            + (l.memo ? '<span style="color:' + C.sub + ';font-size:9.5px"> ' + esc(l.memo) + "</span>" : "")
+            + '</td><td style="' + td + num + st + '">' + m(l.val / 12) + '</td><td style="' + td + num + st + '">' + y(l.val) + "</td></tr>";
+        }).join("") + "</table>";
+    if (lastPlan) {
+      h += h2("半年の見通し（万円）") + '<table style="border-collapse:collapse;width:100%"><tr><th style="' + td + 'text-align:left"></th>'
+        + lastPlan.ks.map(function (k) { return '<th style="' + td + num + '">' + k.slice(0, 4) + "/" + +k.slice(5) + "</th>"; }).join("")
+        + '<th style="' + td + num + '">6か月計</th></tr>'
+        + lastPlan.rows.map(function (r) {
+            var st = r.cls === "sum" ? "font-weight:700;color:" + C.red + ";border-top:2px solid " + C.ink + ";"
+                   : r.cls === "sub" ? "color:" + C.sub + ";" : "";
+            return '<tr><td style="' + td + st + '">' + esc(r.label) + "</td>"
+              + r.vals.map(function (v) { return '<td style="' + td + num + st + '">' + y(v) + "</td>"; }).join("")
+              + '<td style="' + td + num + st + '">' + y(r.total) + "</td></tr>";
+          }).join("") + "</table>"
+        + '<p style="color:' + C.sub + ';font-size:9.5px;margin:6px 0 0">' + esc(document.querySelector(".plan-note").textContent) + "</p>";
+    }
+    h += h2("計算の前提・できないこと") + '<ul style="margin:0;padding-left:16px;color:' + C.sub + ';font-size:9.5px">'
+      + noteList().map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul>"
+      + '<p style="color:' + C.sub + ';font-size:9.5px;margin:10px 0 0">税額の確定や申告の判断は、税務署や税理士に確認してください。</p></div>';
+    return h;
+  }
+
+  // 報告用の要素を画像にして A4 に貼る。行の途中でページが切れないよう、行の下端で区切る
+  $("savePdf").addEventListener("click", function () {
+    say("PDFを作っています…");
+    var box = document.createElement("div");
+    box.style.cssText = "position:absolute;left:-10000px;top:0;width:690px";
+    box.innerHTML = reportHtml(read());
+    Promise.all([
+      loadScript("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"),
+      loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js")
+    ]).then(function () {
+      document.body.appendChild(box);
+      var root = box.firstChild;
+      var top0 = root.getBoundingClientRect().top;
+      var cuts = Array.prototype.map.call(root.querySelectorAll("tr, li, p, h2, div"), function (el) {
+        return el.getBoundingClientRect().bottom - top0;
+      }).sort(function (x, y) { return x - y; });
+      return window.html2canvas(root, { scale: 2, backgroundColor: "#FFFCF4", windowWidth: 800 }).then(function (cv) {
+        var pdf = new window.jspdf.jsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
+        var M = 10, W = 210 - M * 2, H = 297 - M * 2;
+        var k = cv.width / root.offsetWidth;            // CSS px → canvas px
+        var pageCss = H * root.offsetWidth / W;           // 1ページに入る CSS px の高さ
+        var y = 0, total = root.offsetHeight, first = true;
+        while (y < total - 1) {
+          var end = Math.min(total, y + pageCss);
+          if (end < total) {
+            var ok = cuts.filter(function (c) { return c > y + 40 && c <= end; });
+            if (ok.length) end = ok[ok.length - 1];
+          }
+          var part = document.createElement("canvas");
+          part.width = cv.width; part.height = Math.ceil((end - y) * k);
+          var g = part.getContext("2d");
+          g.fillStyle = "#FFFCF4"; g.fillRect(0, 0, part.width, part.height);
+          g.drawImage(cv, 0, Math.floor(y * k), cv.width, part.height, 0, 0, cv.width, part.height);
+          if (!first) pdf.addPage();
+          pdf.addImage(part.toDataURL("image/jpeg", 0.95), "JPEG", M, M, W, (end - y) * W / root.offsetWidth);
+          first = false;
+          y = end;
+        }
+        return pdf.output("blob");
+      });
+    }).then(function (blob) {
+      box.remove();
+      return saveFile("手取り_" + today() + ".pdf", blob);
+    }).catch(function () { box.remove(); say("PDFを作れませんでした。通信状況を確かめて、もう一度押してください。"); });
+  });
+
+  buildPlanStart();
   load();
   lastUnit = unitInfo().month ? "month" : "year";
   renderWorks();
+  renderPlanIn();
   render();
 })();
 </script>

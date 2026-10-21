@@ -14,7 +14,7 @@ BASE = "https://shutsumi.github.io/tedori-taro/"
 TITLE = "手取り計算シミュレーター｜手取り教えタロウ"
 DESC = ("会社員・副業・フリーランスの手取りを月額で計算します。"
         "都道府県ごとの健康保険料率、配偶者控除・扶養控除、年収の壁、"
-        "消費税（インボイス・簡易課税）まで含めた概算を無料で。令和8年度の料率に対応。")
+        "消費税（インボイス・2割／3割特例・簡易課税）まで含めた概算と、半年分の月別の見通しを無料で。PDF・Excelで保存できます。令和8年度の料率に対応。")
 
 HEAD = '''<!doctype html>
 <html lang="ja">
@@ -40,8 +40,7 @@ HEAD = '''<!doctype html>
 {{"@context":"https://schema.org","@type":"WebApplication","name":"手取り教えタロウ",
 "url":"{base}","description":"{desc}","applicationCategory":"FinanceApplication",
 "operatingSystem":"Web","inLanguage":"ja",
-"offers":{{"@type":"Offer","price":"0","priceCurrency":"JPY"}},
-"author":{{"@type":"Person","name":"うつみしょうた","url":"https://shutsumi.github.io/"}}}}
+"offers":{{"@type":"Offer","price":"0","priceCurrency":"JPY"}}}}
 </script>
 <style>body{{margin:0}}img{{max-width:100%}}[hidden]{{display:none!important}}</style>
 '''
